@@ -19,7 +19,7 @@ public class DatabaseFile {
 
 	private void readFile() {
 		try { 
-			File file = new File("C:\\TempSEB\\Uno\\DatabaseFile.txt");
+			File file = new File("Uno/DatabaseFile.txt");
 			Scanner scanner = new Scanner(file); 
 
 			numLines = 0;

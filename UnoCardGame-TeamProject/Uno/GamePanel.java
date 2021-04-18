@@ -47,6 +47,7 @@ public class GamePanel extends JPanel{
 		instructionLabel.setBounds(400, 0, 150, 30);
 		Gc.setInstructionLabel(instructionLabel);
 		add(instructionLabel);
+		String path = "/images/PNGs";
 
 		//Create Label for the top card on the deck
 		blueCardLabels = new JLabel[14];
@@ -54,12 +55,12 @@ public class GamePanel extends JPanel{
 		yellowCardLabels = new JLabel[14];
 		greenCardLabels = new JLabel[14];
 		wildCardLabels = new JLabel[2];
-
+		
 		for(int i = 0; i < 13; i++) {
 			blueCardLabels[i] = new JLabel();
 			blueCardLabels[i].setBounds(115, 5,95,160);
 			add(blueCardLabels[i]);
-			ImageIcon icon = new ImageIcon(GamePanel.class.getResource("/Uno/Blue_"+i+".png"));
+			ImageIcon icon = new ImageIcon(GamePanel.class.getResource(path + "/Blue_"+i+".png"));
 			Image img = icon.getImage() ;  
 			Image newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 			icon = new ImageIcon( newimg );
@@ -70,7 +71,7 @@ public class GamePanel extends JPanel{
 			redCardLabels[i] = new JLabel();
 			redCardLabels[i].setBounds(115, 5,95,160);
 			add(redCardLabels[i]);
-			ImageIcon icon = new ImageIcon(GamePanel.class.getResource("/Uno/Red_"+i+".png"));
+			ImageIcon icon = new ImageIcon(GamePanel.class.getResource(path + "/Red_"+i+".png"));
 			Image img = icon.getImage() ;  
 			Image newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 			icon = new ImageIcon( newimg );
@@ -81,7 +82,7 @@ public class GamePanel extends JPanel{
 			yellowCardLabels[i] = new JLabel();
 			yellowCardLabels[i].setBounds(115, 5,95,160);
 			add(yellowCardLabels[i]);
-			ImageIcon icon = new ImageIcon(GamePanel.class.getResource("/Uno/Yellow_"+i+".png"));
+			ImageIcon icon = new ImageIcon(GamePanel.class.getResource(path + "/Yellow_"+i+".png"));
 			Image img = icon.getImage() ;  
 			Image newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 			icon = new ImageIcon( newimg );
@@ -92,7 +93,7 @@ public class GamePanel extends JPanel{
 			greenCardLabels[i] = new JLabel();
 			greenCardLabels[i].setBounds(115, 5,95,160);
 			add(greenCardLabels[i]);
-			ImageIcon icon = new ImageIcon(GamePanel.class.getResource("/Uno/Green_"+i+".png"));
+			ImageIcon icon = new ImageIcon(GamePanel.class.getResource(path + "/Green_"+i+".png"));
 			Image img = icon.getImage() ;  
 			Image newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 			icon = new ImageIcon( newimg );
@@ -102,7 +103,7 @@ public class GamePanel extends JPanel{
 		wildCardLabels[0] = new JLabel();
 		wildCardLabels[0].setBounds(115, 5,95,160);
 		add(wildCardLabels[0]);
-		ImageIcon icon = new ImageIcon(GamePanel.class.getResource("/Uno/Wild.png"));
+		ImageIcon icon = new ImageIcon(GamePanel.class.getResource(path + "/Wild.png"));
 		Image img = icon.getImage() ;  
 		Image newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 		icon = new ImageIcon( newimg );
@@ -112,7 +113,7 @@ public class GamePanel extends JPanel{
 		wildCardLabels[1] = new JLabel();
 		wildCardLabels[1].setBounds(115, 5,95,160);
 		add(wildCardLabels[1]);
-		icon = new ImageIcon(GamePanel.class.getResource("/Uno/Wild_Draw.png"));
+		icon = new ImageIcon(GamePanel.class.getResource(path + "/Wild_Draw.png"));
 		img = icon.getImage() ;  
 		newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 		icon = new ImageIcon( newimg );
@@ -138,7 +139,7 @@ public class GamePanel extends JPanel{
 			blueCardButtons[i].setBounds(115, 525,95,160);
 			blueCardButtons[i].addActionListener(Gc);
 			add(blueCardButtons[i]);
-			icon = new ImageIcon(GamePanel.class.getResource("/Uno/Blue_"+i+".png"));
+			icon = new ImageIcon(GamePanel.class.getResource(path + "/Blue_"+i+".png"));
 			img = icon.getImage() ;  
 			newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 			icon = new ImageIcon( newimg );
@@ -150,7 +151,7 @@ public class GamePanel extends JPanel{
 			redCardButtons[i].setBounds(115, 525,95,160);
 			redCardButtons[i].addActionListener(Gc);
 			add(redCardButtons[i]);
-			icon = new ImageIcon(GamePanel.class.getResource("/Uno/Red_"+i+".png"));
+			icon = new ImageIcon(GamePanel.class.getResource(path + "/Red_"+i+".png"));
 			img = icon.getImage() ;  
 			newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 			icon = new ImageIcon( newimg );
@@ -162,7 +163,7 @@ public class GamePanel extends JPanel{
 			yellowCardButtons[i].setBounds(115, 525,95,160);
 			yellowCardButtons[i].addActionListener(Gc);
 			add(yellowCardButtons[i]);
-			icon = new ImageIcon(GamePanel.class.getResource("/Uno/Yellow_"+i+".png"));
+			icon = new ImageIcon(GamePanel.class.getResource(path + "/Yellow_"+i+".png"));
 			img = icon.getImage() ;  
 			newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 			icon = new ImageIcon( newimg );
@@ -174,7 +175,7 @@ public class GamePanel extends JPanel{
 			greenCardButtons[i].setBounds(115, 525,95,160);
 			greenCardButtons[i].addActionListener(Gc);
 			add(greenCardButtons[i]);
-			icon = new ImageIcon(GamePanel.class.getResource("/Uno/Green_"+i+".png"));
+			icon = new ImageIcon(GamePanel.class.getResource(path + "/Green_"+i+".png"));
 			img = icon.getImage() ;  
 			newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 			icon = new ImageIcon( newimg );
@@ -185,7 +186,7 @@ public class GamePanel extends JPanel{
 		wildCardButtons[0].setBounds(115, 525,95,160);
 		wildCardButtons[0].addActionListener(Gc);
 		add(wildCardButtons[0]);
-		icon = new ImageIcon(GamePanel.class.getResource("/Uno/Wild.png"));
+		icon = new ImageIcon(GamePanel.class.getResource(path + "/Wild.png"));
 		img = icon.getImage() ;  
 		newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 		icon = new ImageIcon( newimg );
@@ -196,7 +197,7 @@ public class GamePanel extends JPanel{
 		wildCardButtons[1].setBounds(115, 525,95,160);
 		wildCardButtons[1].addActionListener(Gc);
 		add(wildCardButtons[1]);
-		icon = new ImageIcon(GamePanel.class.getResource("/Uno/Wild_Draw.png"));
+		icon = new ImageIcon(GamePanel.class.getResource(path + "/Wild_Draw.png"));
 		img = icon.getImage() ;  
 		newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 		icon = new ImageIcon( newimg );
@@ -214,7 +215,7 @@ public class GamePanel extends JPanel{
 		deckButton.setBounds(5, 5,95,160);
 		deckButton.addActionListener(Gc);
 		add(deckButton);
-		icon = new ImageIcon(GamePanel.class.getResource("/Uno/Deck.png"));
+		icon = new ImageIcon(GamePanel.class.getResource(path + "/Deck.png"));
 		img = icon.getImage() ;  
 		newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 		icon = new ImageIcon( newimg );
@@ -233,7 +234,7 @@ public class GamePanel extends JPanel{
 		userPlayButton.setBounds(5, 525,95,160);
 		userPlayButton.addActionListener(Gc);
 		add(userPlayButton);
-		icon = new ImageIcon(GamePanel.class.getResource("/Uno/Deck.png"));
+		icon = new ImageIcon(GamePanel.class.getResource(path + "/Deck.png"));
 		img = icon.getImage();  
 		newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 		icon = new ImageIcon( newimg );
@@ -260,7 +261,7 @@ public class GamePanel extends JPanel{
 			otherPlayerDeck[i].setBounds(700, (50+(200*i)),95,160);
 			otherPlayerDeck[i].addActionListener(Gc);
 			add(otherPlayerDeck[i]);
-			icon = new ImageIcon(GamePanel.class.getResource("/Uno/Deck.png"));
+			icon = new ImageIcon(GamePanel.class.getResource(path + "/Deck.png"));
 			img = icon.getImage();  
 			newimg = img.getScaledInstance( 90, 160,  java.awt.Image.SCALE_SMOOTH ) ;  
 			icon = new ImageIcon( newimg );
