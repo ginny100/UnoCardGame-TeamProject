@@ -43,7 +43,7 @@ public class MenuControl implements ActionListener
 		{
 			MenuData data = new MenuData("3", client.getUserName());
 			try {
-				//You are sending the data of 2 to the server so that the
+				//You are sending the data of 3 to the server so that the
 				//Server knows whether or not it is a 3 player game
 				client.sendToServer(data);
 			} catch (IOException e) {
@@ -52,11 +52,11 @@ public class MenuControl implements ActionListener
 			}
 		}
 		
-		if (command == "Join 3 player game")
+		if (command == "Join 4 player game")
 		{
 			MenuData data = new MenuData("4", client.getUserName());
 			try {
-				//You are sending the data of 2 to the server so that the
+				//You are sending the data of 4 to the server so that the
 				//Server knows whether or not it is a 4 player game
 				client.sendToServer(data);
 			} catch (IOException e) {

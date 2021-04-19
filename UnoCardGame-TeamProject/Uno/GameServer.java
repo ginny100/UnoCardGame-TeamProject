@@ -160,7 +160,7 @@ public class GameServer extends AbstractServer
 			// Try to create the account.
 			CreateAccountData data = (CreateAccountData)arg0;
 			Object result;
-			if (File.UserCheck(data.getUsername()))
+			if (!File.UserCheck(data.getUsername()))
 			{
 				result = "CreateAccountSuccessful";
 				try {
@@ -281,7 +281,10 @@ public class GameServer extends AbstractServer
 			}
 
 			firstCardsFunction(firstCards);
-
+			
+			System.out.println("Result1: " + result);
+			System.out.println("Result2: " + result2);
+			
 			// Send the result to the client.
 			try
 			{
@@ -304,7 +307,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				usersTurn =0;
+				usersTurn = 0;
 				cardsPlaced.add(deck.get(0));
 				deck.remove(0);
 			}

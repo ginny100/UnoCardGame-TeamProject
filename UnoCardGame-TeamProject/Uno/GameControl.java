@@ -116,7 +116,9 @@ public class GameControl implements ActionListener{
 
 		// Get the name of the button clicked.
 		String command = ae.getActionCommand();
-
+		
+		System.out.println("Action performed. Connected? " + client.isConnected());
+		
 		if(command == "PD") {
 
 			cycleThroughHand();
@@ -124,6 +126,7 @@ public class GameControl implements ActionListener{
 		else if(command == "D") {
 			GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
 			try {
+				System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
 				client.sendToServer(data);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -190,6 +193,7 @@ public class GameControl implements ActionListener{
 			String tokens[] = command.split(",");
 			GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
 			try {
+				System.out.println("Trying to place: " + data.toString());
 				client.sendToServer(data);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
