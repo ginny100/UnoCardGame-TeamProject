@@ -15,7 +15,7 @@ public class GameControl implements ActionListener{
 	private JPanel container;
 
 	//The client that is using this
-	private ChatClient client;
+	private GameClient client;
 
 	//The label at the top of the GamePanel that tells players what to do
 	private JLabel instructionLabel;
@@ -99,7 +99,7 @@ public class GameControl implements ActionListener{
 	}
 
 	// Constructor for the login controller.
-	public GameControl(JPanel container,ChatClient client)
+	public GameControl(JPanel container,GameClient client)
 	{
 		this.container = container;
 		this.client = client;

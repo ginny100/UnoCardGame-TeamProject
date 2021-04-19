@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class ChatServer extends AbstractServer
+public class GameServer extends AbstractServer
 {
 	// Data fields for this chat server.
 	private JTextArea log;
@@ -43,7 +43,7 @@ public class ChatServer extends AbstractServer
 	private int usersTurn;
 
 	// Constructor for initializing the server with default settings.
-	public ChatServer()
+	public GameServer()
 	{
 		super(12345);
 		this.setTimeout(500);

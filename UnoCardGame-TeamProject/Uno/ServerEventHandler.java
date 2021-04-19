@@ -16,9 +16,9 @@ public class ServerEventHandler implements ActionListener{
 	private JTextField port;
 	private JTextField timeout;
 	private JTextArea log;
-	private ChatServer server;
+	private GameServer server;
 
-	public ServerEventHandler(ChatServer server, JLabel stat, JButton Listen, JButton Close, JButton ServerStop, JButton Quit,
+	public ServerEventHandler(GameServer server, JLabel stat, JButton Listen, JButton Close, JButton ServerStop, JButton Quit,
 			JTextField port, JTextField timeout, JTextArea log){
 		this.server = server;
 		this.stat = stat;

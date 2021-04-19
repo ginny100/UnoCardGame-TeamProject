@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 
 import ocsf.client.AbstractClient;
 
-public class ChatClient extends AbstractClient
+public class GameClient extends AbstractClient
 {
 	// Private data fields for storing the GUI controllers.
 	private LoginControl loginControl;
@@ -47,7 +47,7 @@ public class ChatClient extends AbstractClient
 	}
 
 	// Constructor for initializing the client with default settings.
-	public ChatClient()
+	public GameClient()
 	{
 		super("localhost", 8300);
 		userCards = new ArrayList<String>();

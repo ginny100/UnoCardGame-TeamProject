@@ -24,12 +24,12 @@ public class ServerGUI extends JFrame {
 	private JButton close;
 	private JButton stop;
 	private JButton quit;
-	private ChatServer server;
+	private GameServer server;
 	private DatabaseFile File;
 
 	public ServerGUI() {
 
-		server = new ChatServer();
+		server = new GameServer();
 		File = new DatabaseFile();
 
 		server.setDatabase(File);
