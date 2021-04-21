@@ -56,13 +56,12 @@ public class GameClient extends AbstractClient
 	// Method that handles messages from the server.
 	public void handleMessageFromServer(Object arg0)
 	{
-		System.out.println(arg0);
+		System.out.println("Message: " + arg0);
 		// If we received a String, figure out what this event is.
 		if (arg0 instanceof String)
 		{
 			// Get the text of the message.
 			String message = (String)arg0;
-			System.out.println(message);
 			String messages[] = message.split(",");
 
 			if(messages[0].equals("PutOnTop")) {

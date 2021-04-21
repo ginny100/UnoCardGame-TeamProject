@@ -98,11 +98,16 @@ public class GameControl implements ActionListener{
 		this.unoLabels= unoLabels;
 	}
 
-	// Constructor for the login controller.
+	// Constructor for the game controller.
 	public GameControl(JPanel container,GameClient client)
 	{
 		this.container = container;
 		this.client = client;
+		
+		// Initialize values
+		topCardColor = "";
+		topCardValue = 0;
+		
 		userCardDisplayedValue = new String[2];
 		userCardDisplayedValue[0] = "B";
 		userCardDisplayedValue[1] = "0";
@@ -117,10 +122,7 @@ public class GameControl implements ActionListener{
 		// Get the name of the button clicked.
 		String command = ae.getActionCommand();
 		
-		System.out.println("Action performed. Connected? " + client.isConnected());
-		
 		if(command == "PD") {
-
 			cycleThroughHand();
 		}
 		else if(command == "D") {

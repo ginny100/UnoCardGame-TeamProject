@@ -56,6 +56,7 @@ public class GameServer extends AbstractServer
 		numThreePlayersReady = 0;
 		numFourPlayersReady = 0;
 
+		cardsPlaced = new ArrayList<String>();
 		d = new Deck();
 		deck = d.getDeck();
 
@@ -296,17 +297,18 @@ public class GameServer extends AbstractServer
 				return;
 			}
 			System.out.println(arg1);
-
+			
 			if(result2 != null) {
-				sendToAllClients("GameTrue");
-				sendToAllClients("cardOnTop,"+deck.get(0));
 				try {
+					clients.get(0).sendToClient("FixMePlease");
+					sendToAllClients("GameTrue");
+					sendToAllClients("cardOnTop,"+deck.get(0));
 					clients.get(0).sendToClient("YourTurn");
-					clients.get(1).sendToClient("YourTurn");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 				usersTurn = 0;
 				cardsPlaced.add(deck.get(0));
 				deck.remove(0);
@@ -467,13 +469,14 @@ public class GameServer extends AbstractServer
 					else {
 						//Make error if they don't send a card that can be placed
 					}
-
 				}
 			}
 
 		}
 	}
 
+
+	
 	// Method that handles listening exceptions by displaying exception information.
 	public void listeningException(Throwable exception) 
 	{
