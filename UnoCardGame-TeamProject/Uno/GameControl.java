@@ -28,6 +28,15 @@ public class GameControl implements ActionListener{
 	private JButton greenCardButtons[];
 	private JButton wildCardButtons[];
 
+	
+	// JLabels to show the last card played (beside the draw pile)
+	private JLabel blueCardLabels[];
+	private JLabel redCardLabels[];
+	private JLabel yellowCardLabels[];
+	private JLabel greenCardLabels[];
+	private JLabel wildCardLabels[];
+	
+	
 	private JButton[] otherPlayerDeck;
 	private JButton deckButton;
 	private JButton userPlayButton;
@@ -52,7 +61,7 @@ public class GameControl implements ActionListener{
 
 	//The color the player before changed it to
 	private String colorChangedTo;
-	//This tells whether or not someone changed the color becasue I dont want to write an if statement 
+	//This tells whether or not someone changed the color because I don't want to write an if statement 
 	//checking all the colors again
 	private boolean colorChanged;
 
@@ -96,6 +105,15 @@ public class GameControl implements ActionListener{
 
 	public void setUnoLabels(JLabel[] unoLabels) {
 		this.unoLabels= unoLabels;
+	}
+	
+	// Setter for cards played (visible to all players when a card is played)
+	public void setPlayedLabels(JLabel[] blueLabels, JLabel[] redLabels, JLabel[] yellowLabels, JLabel[] greenLabels, JLabel[] wildLabels) {
+		this.blueCardLabels = blueLabels;
+		this.redCardLabels = redLabels;
+		this.yellowCardLabels = yellowLabels;
+		this.greenCardLabels = greenLabels;
+		this.wildCardLabels = wildLabels;
 	}
 
 	// Constructor for the game controller.
@@ -226,37 +244,33 @@ public class GameControl implements ActionListener{
 	//Change to newCardOnTop
 	public void CardPlaced(String topCardColor, int topCardValue) {
 
-		blueCardButtons[this.topCardValue].setVisible(false);
-		redCardButtons[this.topCardValue].setVisible(false);
-		yellowCardButtons[this.topCardValue].setVisible(false);
-		greenCardButtons[this.topCardValue].setVisible(false);
+		blueCardLabels[this.topCardValue].setVisible(false);
+		redCardLabels[this.topCardValue].setVisible(false);
+		yellowCardLabels[this.topCardValue].setVisible(false);
+		greenCardLabels[this.topCardValue].setVisible(false);
 		if(this.topCardColor.equals("W")) {
-			wildCardButtons[this.topCardValue].setVisible(false);
+			wildCardLabels[this.topCardValue].setVisible(false);
 		}
-
-
 
 
 		this.topCardColor = topCardColor;
 		this.topCardValue = topCardValue;
 
 
-
-
 		if(topCardColor.equals("B")) {
-			blueCardButtons[topCardValue].setVisible(true);
+			blueCardLabels[topCardValue].setVisible(true);
 		}
 		else if (topCardColor.equals("R")) {
-			redCardButtons[topCardValue].setVisible(true);
+			redCardLabels[topCardValue].setVisible(true);
 		}
 		else if (topCardColor.equals("Y")) {
-			yellowCardButtons[topCardValue].setVisible(true);
+			yellowCardLabels[topCardValue].setVisible(true);
 		}
 		else if (topCardColor.equals("G")) {
-			greenCardButtons[topCardValue].setVisible(true);
+			greenCardLabels[topCardValue].setVisible(true);
 		}
 		else if (topCardColor.equals("W")) {
-			wildCardButtons[topCardValue].setVisible(true);
+			wildCardLabels[topCardValue].setVisible(true);
 		}
 	}
 

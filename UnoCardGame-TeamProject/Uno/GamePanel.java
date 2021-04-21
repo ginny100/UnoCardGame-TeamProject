@@ -122,11 +122,6 @@ public class GamePanel extends JPanel{
 
 
 
-
-
-
-
-
 		//Create the buttons for the players cards
 		blueCardButtons = new JButton[14];
 		redCardButtons = new JButton[14];
@@ -205,11 +200,6 @@ public class GamePanel extends JPanel{
 		wildCardButtons[1].setVisible(false);
 
 
-
-
-
-
-
 		//Create buttons for the decks of cards
 		deckButton = new JButton("D");
 		deckButton.setBounds(5, 5,95,160);
@@ -221,12 +211,6 @@ public class GamePanel extends JPanel{
 		icon = new ImageIcon( newimg );
 		deckButton.setIcon(icon);
 		deckButton.setVisible(false);
-
-
-
-
-
-
 
 
 		//Create button for the users deck of cards
@@ -246,13 +230,8 @@ public class GamePanel extends JPanel{
 		add(userUnoLabel);
 		userUnoLabel.setText("7");
 		userUnoLabel.setVisible(false);
-
-
 		
-
-
-
-
+		
 		otherPlayerDeck = new JButton[3];
 		unoLabels = new JLabel[3];
 
@@ -268,17 +247,12 @@ public class GamePanel extends JPanel{
 			otherPlayerDeck[i].setIcon(icon);
 			otherPlayerDeck[i].setVisible(false);
 			
-			
-			
 			unoLabels[i] = new JLabel();
 			unoLabels[i].setBounds(650, (100+(200*i)),20,20);
 			add(unoLabels[i]);
 			unoLabels[i].setText("7");
 			unoLabels[i].setVisible(false);
 		}
-		
-		
-		
 		
 		
 		
@@ -299,6 +273,7 @@ public class GamePanel extends JPanel{
 			chooseColorButtons[i].setVisible(false);
 		}
 		
+		Gc.setPlayedLabels(blueCardLabels, redCardLabels, yellowCardLabels, greenCardLabels, wildCardLabels);
 		Gc.setChooseColorButtons(chooseColorButtons);
 		Gc.setUserUnoLabel(userUnoLabel);
 		Gc.setUnoLabels(unoLabels);
