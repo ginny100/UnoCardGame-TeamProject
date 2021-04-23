@@ -150,19 +150,21 @@ public class GameControl implements ActionListener{
 		if(command == "PD") {
 			cycleThroughHand();
 		}
-		
+
 		// If the user is drawing from the deck
-		else if(command == "D" && gameRules.canDraw()) {
-			GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
-			try {
-				System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
-				client.sendToServer(data);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		else if(command == "D") {
+			if (gameRules.canDraw()) {
+				GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
+				try {
+					System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
+					client.sendToServer(data);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
-		
+
 		// If the user is declaring Uno 
 		else if(command == "uno") {
 			GameData data = new GameData("uno", client.getUserName(), userPlayerNum, numPlayers);
@@ -173,7 +175,7 @@ public class GameControl implements ActionListener{
 				e.printStackTrace();
 			}
 		}
-		
+
 		// If the user is playing a wild or wild draw four
 		else if(command == "W,0" || command == "W,1"){
 			String tokens[] = command.split(",");
@@ -190,7 +192,7 @@ public class GameControl implements ActionListener{
 				}
 			}
 		}
-		
+
 		// If the user is changing the color in play
 		else if(command == "Blue" || command == "Red" || command == "Yellow" || command == "Green") {
 			GameData data = new GameData(command, client.getUserName(), userPlayerNum, numPlayers);
@@ -205,7 +207,7 @@ public class GameControl implements ActionListener{
 				chooseColorButtons[i].setVisible(false);
 			}
 		}
-		
+
 		// ???
 		else if(colorChanged){
 
@@ -224,23 +226,11 @@ public class GameControl implements ActionListener{
 			}
 			colorChanged = false;
 		}
-		
+
 		// If user is trying to place a normal card
 		else {
 			if (gameRules.cardCanPlay(command)) {
-				cardTryingToPlace = command;
-				String tokens[] = command.split(",");
-				GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
-				try {
-					System.out.println("Trying to place: " + data.getCardColor() + data.getCardValue());
-					userCards.remove(command);
-					userUnoLabel.setText(Integer.toString(userCards.size()));
-					cycleThroughHand();
-					client.sendToServer(data);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				playCard(command);
 			}
 		}
 
@@ -345,6 +335,25 @@ public class GameControl implements ActionListener{
 		for(int i = 0; i < numPlayers-1; i++) {
 			otherPlayerDeck[i].setVisible(true);
 			unoLabels[i].setVisible(true);
+		}
+	}
+
+	private void playCard(String card) {
+		cardTryingToPlace = card;
+		String tokens[] = card.split(",");
+		GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
+		try {
+			System.out.println("Trying to place: " + data.getCardColor() + data.getCardValue());
+			userCards.remove(card);
+			userUnoLabel.setText(Integer.toString(userCards.size()));
+			cycleThroughHand();
+			client.sendToServer(data);
+			isUsersTurn = false;
+			instructionLabel.setText("Waiting for your turn");
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

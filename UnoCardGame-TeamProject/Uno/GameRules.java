@@ -30,7 +30,7 @@ public class GameRules {
 		if (card.contains(gc.topCardColor)) 
 		{
 			return true;
-		} else if(card.substring(1).equals(Integer.toString(gc.topCardValue))) 
+		} else if(card.substring(2).equals(Integer.toString(gc.topCardValue))) 
 		{
 			return true;
 		}
@@ -38,4 +38,5 @@ public class GameRules {
 			return false;
 		}
 	}
+
 }

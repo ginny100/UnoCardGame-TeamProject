@@ -302,7 +302,8 @@ public class GameServer extends AbstractServer
 			if(result2 != null) {
 				try {
 					sendToAllClients("GameTrue");
-					sendToAllClients("cardOnTop,"+deck.get(0));
+					//sendToAllClients("cardOnTop,"+deck.get(0));
+					sendToAllClients("cardOnTop,R,10");	// Remove this <---
 					clients.get(0).sendToClient("YourTurn");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -310,8 +311,7 @@ public class GameServer extends AbstractServer
 				}
 
 				usersTurn = 0;
-				cardsPlaced.add(deck.get(0));
-				deck.remove(0);
+				cardsPlaced.add(drawFromDeck());
 			}
 		}
 
@@ -327,34 +327,26 @@ public class GameServer extends AbstractServer
 				// Prevent errors if gameData did not come from button
 				if (data.getButtonName() != null) {
 					if(data.getButtonName().equals("DrawCard")) {
-						handCardsAdded.add(deck.get(0));
+						handCardsAdded.add(drawFromDeck());
 						try {
 							arg1.sendToClient(handCardsAdded);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						if(deck.isEmpty()) {
-							deckReplacement();
-						}
-						deck.remove(0);
 						handCardsAdded.removeAll(handCardsAdded);
 					}
 					else if(data.getButtonName().equals("uno")) {
 
 						for(int i = 0; i< data.getNumPlayers(); i++) {
 							if(data.getPlayerNum() != i && twoPlayerCardNum[i].equals("1")) {
-								handCardsAdded.add(deck.get(0));
+								handCardsAdded.add(drawFromDeck());
 								try {
 									clients.get(i).sendToClient(handCardsAdded);
 								} catch (IOException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								if(deck.isEmpty()) {
-									deckReplacement();
-								}
-								deck.remove(0);
 								handCardsAdded.removeAll(handCardsAdded);
 								result = "uno";
 							}
@@ -373,11 +365,7 @@ public class GameServer extends AbstractServer
 						//The color is figured out in the gameControl
 						//Send draw 4 to the next player
 						for(int i = 0; i < 4; i++) {
-							handCardsAdded.add(deck.get(0));
-							if(deck.isEmpty()) {
-								deckReplacement();
-							}
-							deck.remove(0);
+							handCardsAdded.add(drawFromDeck());
 						}
 						try {
 							clients.get(usersTurn+1).sendToClient(handCardsAdded);
@@ -400,17 +388,14 @@ public class GameServer extends AbstractServer
 						//So they can show that card on top of the pile
 						if(Integer.parseInt(data.getCardValue()) <= 9 && Integer.parseInt(data.getCardValue()) >= 0) {
 							sendToAllClients("PutOnTop,"+data.getCardColor()+","+data.getCardValue());
-
 						}
+						
+						// If 10, then it is a draw two
 						else if(Integer.parseInt(data.getCardValue()) == 10) {
 							//Draw 2
 							//Send Draw 2 to the next player
 							for(int i = 0; i < 2; i++) {
 								handCardsAdded.add(deck.get(0));
-								if(deck.isEmpty()) {
-									deckReplacement();
-								}
-								deck.remove(0);
 							}
 							try {
 								clients.get(usersTurn+1).sendToClient(handCardsAdded);
@@ -449,13 +434,7 @@ public class GameServer extends AbstractServer
 							}
 						}
 
-						if((usersTurn+1) == 2 && data.getNumPlayers() == 2) {
-							usersTurn--;
-						}
-						else if((usersTurn+1) == 3 && data.getNumPlayers() == 3) {
-							usersTurn--;
-						}
-						else if((usersTurn+1) == 4 && data.getNumPlayers() == 4) {
+						if((usersTurn+1) == data.getNumPlayers()) {
 							usersTurn--;
 						}
 						else {
@@ -494,14 +473,24 @@ public class GameServer extends AbstractServer
 		log.append("Press Listen to restart server\n");
 	}
 
-	public void firstCardsFunction(ArrayList<String> firstCards) {
+	private void firstCardsFunction(ArrayList<String> firstCards) {
 		for(int i = 0; i < 7; i++) {
 			firstCards.add(deck.get(0));
 			deck.remove(0);
 		}
 	}
 
-	public void deckReplacement() {
+	// Helper method to get a card from the deck and remove its entry
+	private String drawFromDeck() {
+		String card = deck.get(0);
+		if(deck.isEmpty()) {
+			deckReplacement();
+		}
+		deck.remove(0);
+		return card;
+	}
+	
+	private void deckReplacement() {
 		deck.addAll(cardsPlaced);
 		d.Shuffle(deck);
 		cardsPlaced.removeAll(cardsPlaced);
