@@ -28,25 +28,25 @@ public class GameControl implements ActionListener{
 	private JButton greenCardButtons[];
 	private JButton wildCardButtons[];
 
-	
+
 	// JLabels to show the last card played (beside the draw pile)
 	private JLabel blueCardLabels[];
 	private JLabel redCardLabels[];
 	private JLabel yellowCardLabels[];
 	private JLabel greenCardLabels[];
 	private JLabel wildCardLabels[];
-	
-	
+
+
 	private JButton[] otherPlayerDeck;
 	private JButton deckButton;
 	private JButton userPlayButton;
 
-	private ArrayList<String> userCards;
+	public ArrayList<String> userCards;
 	private int userCardDisplayed;
 	private String userCardDisplayedValue[];
 
-	private String topCardColor;
-	private int topCardValue;
+	public String topCardColor;
+	public int topCardValue;
 
 	private String cardTryingToPlace;
 
@@ -64,6 +64,9 @@ public class GameControl implements ActionListener{
 	//This tells whether or not someone changed the color because I don't want to write an if statement 
 	//checking all the colors again
 	private boolean colorChanged;
+
+	public boolean isUsersTurn;
+	private GameRules gameRules;
 
 	public void setUserPlayerNum(int userPlayerNum) {
 		this.userPlayerNum = userPlayerNum;
@@ -106,7 +109,7 @@ public class GameControl implements ActionListener{
 	public void setUnoLabels(JLabel[] unoLabels) {
 		this.unoLabels= unoLabels;
 	}
-	
+
 	// Setter for cards played (visible to all players when a card is played)
 	public void setPlayedLabels(JLabel[] blueLabels, JLabel[] redLabels, JLabel[] yellowLabels, JLabel[] greenLabels, JLabel[] wildLabels) {
 		this.blueCardLabels = blueLabels;
@@ -121,14 +124,17 @@ public class GameControl implements ActionListener{
 	{
 		this.container = container;
 		this.client = client;
-		
+
 		// Initialize values
 		topCardColor = "";
 		topCardValue = 0;
-		
+		isUsersTurn = false;
+
 		userCardDisplayedValue = new String[2];
 		userCardDisplayedValue[0] = "B";
 		userCardDisplayedValue[1] = "0";
+
+		gameRules = new GameRules(this);
 	}
 
 	// Handle button clicks.
@@ -139,11 +145,11 @@ public class GameControl implements ActionListener{
 
 		// Get the name of the button clicked.
 		String command = ae.getActionCommand();
-		
+
 		if(command == "PD") {
 			cycleThroughHand();
 		}
-		else if(command == "D") {
+		else if(command == "D" && gameRules.canDraw()) {
 			GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
 			try {
 				System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
@@ -208,16 +214,17 @@ public class GameControl implements ActionListener{
 			colorChanged = false;
 		}
 		else {
-
-			cardTryingToPlace = command;
-			String tokens[] = command.split(",");
-			GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
-			try {
-				System.out.println("Trying to place: " + data.toString());
-				client.sendToServer(data);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (gameRules.cardCanPlay(command)) {
+				cardTryingToPlace = command;
+				String tokens[] = command.split(",");
+				GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
+				try {
+					System.out.println("Trying to place: " + data.getCardValue());
+					client.sendToServer(data);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -326,6 +333,7 @@ public class GameControl implements ActionListener{
 	}
 
 	public void usersTurn() {
+		isUsersTurn = true;
 		instructionLabel.setText("Your Turn");
 	}
 

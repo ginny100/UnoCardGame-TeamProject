@@ -300,7 +300,6 @@ public class GameServer extends AbstractServer
 			
 			if(result2 != null) {
 				try {
-					clients.get(0).sendToClient("FixMePlease");
 					sendToAllClients("GameTrue");
 					sendToAllClients("cardOnTop,"+deck.get(0));
 					clients.get(0).sendToClient("YourTurn");
