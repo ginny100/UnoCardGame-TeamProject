@@ -65,10 +65,10 @@ public class GameClient extends AbstractClient
 			String messages[] = message.split(",");
 
 			if(messages[0].equals("PutOnTop")) {
-				gameControl.CardPlaced(messages[1], Integer.parseInt(messages[2]));
+				gameControl.cardPlaced(messages[1], Integer.parseInt(messages[2]));
 			}
 			else if(messages[0].equals("cardOnTop")) {
-				gameControl.CardPlaced(messages[1], Integer.parseInt(messages[2]));
+				gameControl.cardPlaced(messages[1], Integer.parseInt(messages[2]));
 			}
 			else if(message.equals("CanPlace")) {
 				gameControl.canPlaceCard();

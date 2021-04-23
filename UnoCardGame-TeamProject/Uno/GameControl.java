@@ -146,9 +146,12 @@ public class GameControl implements ActionListener{
 		// Get the name of the button clicked.
 		String command = ae.getActionCommand();
 
+		// If the user is cycling through their hand
 		if(command == "PD") {
 			cycleThroughHand();
 		}
+		
+		// If the user is drawing from the deck
 		else if(command == "D" && gameRules.canDraw()) {
 			GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
 			try {
@@ -159,6 +162,8 @@ public class GameControl implements ActionListener{
 				e.printStackTrace();
 			}
 		}
+		
+		// If the user is declaring Uno 
 		else if(command == "uno") {
 			GameData data = new GameData("uno", client.getUserName(), userPlayerNum, numPlayers);
 			try {
@@ -168,6 +173,8 @@ public class GameControl implements ActionListener{
 				e.printStackTrace();
 			}
 		}
+		
+		// If the user is playing a wild or wild draw four
 		else if(command == "W,0" || command == "W,1"){
 			String tokens[] = command.split(",");
 			GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
@@ -183,6 +190,8 @@ public class GameControl implements ActionListener{
 				}
 			}
 		}
+		
+		// If the user is changing the color in play
 		else if(command == "Blue" || command == "Red" || command == "Yellow" || command == "Green") {
 			GameData data = new GameData(command, client.getUserName(), userPlayerNum, numPlayers);
 
@@ -196,6 +205,8 @@ public class GameControl implements ActionListener{
 				chooseColorButtons[i].setVisible(false);
 			}
 		}
+		
+		// ???
 		else if(colorChanged){
 
 			String tokens[] = command.split(",");
@@ -213,13 +224,18 @@ public class GameControl implements ActionListener{
 			}
 			colorChanged = false;
 		}
+		
+		// If user is trying to place a normal card
 		else {
 			if (gameRules.cardCanPlay(command)) {
 				cardTryingToPlace = command;
 				String tokens[] = command.split(",");
 				GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
 				try {
-					System.out.println("Trying to place: " + data.getCardValue());
+					System.out.println("Trying to place: " + data.getCardColor() + data.getCardValue());
+					userCards.remove(command);
+					userUnoLabel.setText(Integer.toString(userCards.size()));
+					cycleThroughHand();
 					client.sendToServer(data);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -249,7 +265,7 @@ public class GameControl implements ActionListener{
 	}
 
 	//Change to newCardOnTop
-	public void CardPlaced(String topCardColor, int topCardValue) {
+	public void cardPlaced(String topCardColor, int topCardValue) {
 
 		blueCardLabels[this.topCardValue].setVisible(false);
 		redCardLabels[this.topCardValue].setVisible(false);
