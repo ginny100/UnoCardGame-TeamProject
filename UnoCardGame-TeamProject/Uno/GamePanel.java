@@ -262,9 +262,9 @@ public class GamePanel extends JPanel{
 		color[2] = "Yellow";
 		color[3] = "Green";
 		
-		chooseColorButtons = new JButton[3];
+		chooseColorButtons = new JButton[4];
 		
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < 4; i++) {
 			chooseColorButtons[i] = new JButton(color[i]);
 			chooseColorButtons[i].setBounds((5+(50*i)), 300,20,20);
 			chooseColorButtons[i].addActionListener(Gc);

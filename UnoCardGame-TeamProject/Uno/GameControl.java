@@ -59,11 +59,11 @@ public class GameControl implements ActionListener{
 
 	private JButton chooseColorButtons[];
 
-	//The color the player before changed it to
-	private String colorChangedTo;
-	//This tells whether or not someone changed the color because I don't want to write an if statement 
-	//checking all the colors again
-	private boolean colorChanged;
+//TODO	//The color the player before changed it to
+//	private String colorChangedTo;
+//	//This tells whether or not someone changed the color because I don't want to write an if statement 
+//	//checking all the colors again
+//	private boolean colorChanged;
 
 	public boolean isUsersTurn;
 	private GameRules gameRules;
@@ -215,23 +215,23 @@ public class GameControl implements ActionListener{
 		}
 
 		// TODO???
-		else if(colorChanged){
-
-			String tokens[] = command.split(",");
-			if(tokens[0] != colorChangedTo) {
-				//Display an error
-			}
-			else {
-				GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
-				try {
-					client.sendToServer(data);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			colorChanged = false;
-		}
+//		else if(colorChanged){
+//
+//			String tokens[] = command.split(",");
+//			if(tokens[0] != colorChangedTo) {
+//				//Display an error
+//			}
+//			else {
+//				GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
+//				try {
+//					client.sendToServer(data);
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//			colorChanged = false;
+//		}
 
 		// If user is trying to place a normal card
 		else {
@@ -241,10 +241,10 @@ public class GameControl implements ActionListener{
 		}
 	}
 
-	public void colorChange(String color) {
-		colorChangedTo = color;
-		colorChanged = true;
-	}
+//	public void colorChange(String color) {
+//		colorChangedTo = color;
+//		colorChanged = true;
+//	}
 
 	public void canPlaceCard() {
 		cycleThroughHand();

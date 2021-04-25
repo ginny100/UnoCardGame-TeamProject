@@ -79,10 +79,10 @@ public class GameClient extends AbstractClient
 			else if(message.equals("YourTurn")) {
 				gameControl.usersTurn();
 			}
-			else if(message.equals("Blue") || message.equals("Blue") || message.equals("Yellow")
-					|| message.equals("Green")) {
-				gameControl.colorChange(message);
-			}
+//			else if(message.equals("Blue") || message.equals("Blue") || message.equals("Yellow")
+//					|| message.equals("Green")) {
+//				gameControl.colorChange(message);
+//			}
 			// If we successfully logged in, tell the login controller.
 			else if (message.equals("LoginSuccessful"))
 			{

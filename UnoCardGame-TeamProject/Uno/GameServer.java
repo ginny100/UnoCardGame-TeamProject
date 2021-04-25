@@ -33,6 +33,7 @@ public class GameServer extends AbstractServer
 
 	private ArrayList<String> deck;
 	private ArrayList<String> cardsPlaced;
+	private String topCard;
 	private Deck d;
 
 	private ArrayList<String> handCardsAdded;
@@ -57,6 +58,7 @@ public class GameServer extends AbstractServer
 		numFourPlayersReady = 0;
 
 		cardsPlaced = new ArrayList<String>();
+		topCard = new String();
 		d = new Deck();
 		deck = d.getDeck();
 
@@ -122,8 +124,6 @@ public class GameServer extends AbstractServer
 
 	// Call all the appropriate methods
 	public void handleMessageFromClient(Object arg0, ConnectionToClient arg1) {
-		System.out.println("Recieved: " + arg0.toString());
-
 		if (arg0 instanceof MenuData) {
 			handleMenuData((MenuData)arg0, arg1);
 		} else if (arg0 instanceof LoginData) {
@@ -163,7 +163,7 @@ public class GameServer extends AbstractServer
 		}
 	}
 
-	
+
 	// Handle MenuData sent to the server
 	private void handleMenuData(MenuData data, ConnectionToClient arg1)
 	{
@@ -186,7 +186,7 @@ public class GameServer extends AbstractServer
 				twoPlayerCardNum[numTwoPlayersReady]="7";
 				numTwoPlayersReady++;
 			}
-			
+
 			// If there are enough players to play, start the game
 			else {
 				try {
@@ -280,8 +280,10 @@ public class GameServer extends AbstractServer
 		if(result2 != null) {
 			try {
 				sendToAllClients("GameTrue");
-				//sendToAllClients("cardOnTop,"+deck.get(0));
+				//topCard = drawFromDeck();
+				//sendToAllClients("cardOnTop,"+topCard);
 				sendToAllClients("cardOnTop,R,10");	// Remove this <---
+				topCard = "R,10";
 				clients.get(0).sendToClient("YourTurn");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -294,11 +296,12 @@ public class GameServer extends AbstractServer
 		}
 	}
 
-
 	// Handle GameData sent to the server
 	public void handleGameData(GameData data, ConnectionToClient arg1) {
+		System.out.println("GameData: " + data.getCardColor() + data.getCardValue() + " from " +data.getUserName());
 		// Prevent errors if gameData did not come from button
 		if (data.getButtonName() != null) {
+			// User is drawing a card
 			if(data.getButtonName().equals("DrawCard")) {
 				handCardsAdded.add(drawFromDeck());
 				try {
@@ -308,9 +311,11 @@ public class GameServer extends AbstractServer
 					e.printStackTrace();
 				}
 				handCardsAdded.removeAll(handCardsAdded);
-				usersTurn++;
-				sendNewTurn(data.getNumPlayers());
+
+				//sendNewTurn(data.getNumPlayers()); <- enable to make draws count as a turn
 			}
+
+			// User is calling out another for not saying Uno on time
 			else if(data.getButtonName().equals("uno")) {
 
 				for(int i = 0; i< data.getNumPlayers(); i++) {
@@ -327,29 +332,33 @@ public class GameServer extends AbstractServer
 					}
 				}
 			}
+
+			// User is changing the color (with a wild)
+			else if(data.getButtonName().equals("Red") || data.getButtonName().equals("Blue")
+					|| data.getButtonName().equals("Yellow") || data.getButtonName().equals("Green")) {
+				//clients.get(usersTurn+1).sendToClient(data.getButtonName()); TODO
+				// Ensure the next user knows what color it is by displaying the previous card in the new color
+				sendToAllClients("PutOnTop,"+data.getButtonName().substring(0,1)+","+topCard.substring(2));
+				sendNewTurn(data.getNumPlayers());
+			}
 		}
 		//!!!!!!!!!!
-		// FIX BELOW
+		// TODO FIX BELOW
 		//!!!!!!!!!!
 		else {
 			//this is where you put the card on the stack
 			//This whole thing basically sets the rules for the class
 
-			String tokens[] = cardsPlaced.get(cardsPlaced.size()-1).split(",");
-			if(data.getCardColor().equals("W") && data.getCardValue().equals("1")) {
-				//The color is figured out in the gameControl
-				//Send draw 4 to the next player
-				for(int i = 0; i < 4; i++) {
-					handCardsAdded.add(drawFromDeck());
-				}
-				try {
-					clients.get(usersTurn+1).sendToClient(handCardsAdded);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			// User is playing a wild / wild draw four
+			String tokens[] = topCard.split(",");
+			if(data.getCardColor().equals("W")) {
+				if (data.getCardValue().equals("1")) {
+					// The color is figured out in the gameControl and resent with color button name
+					// Send draw 4 to the next player
+					forceDrawCards(4, data.getPlayerNum(), data.getNumPlayers());
 				}
 				cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
-				handCardsAdded.removeAll(handCardsAdded);
+				sendToAllClients("PutOnTop,"+data.getCardColor()+","+data.getCardValue());
 
 				//This is because when the user places a draw 4
 				//the user also has to choose which color they want so it is still their turn
@@ -365,28 +374,23 @@ public class GameServer extends AbstractServer
 				if(Integer.parseInt(data.getCardValue()) <= 9 && Integer.parseInt(data.getCardValue()) >= 0) {
 					sendToAllClients("PutOnTop,"+data.getCardColor()+","+data.getCardValue());
 					cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
+					topCard = data.getCardColor()+","+data.getCardValue();
 					sendNewTurn(data.getNumPlayers());
 				}
 
 				// If 10, then it is a draw two
 				else if(Integer.parseInt(data.getCardValue()) == 10) {
-					//Draw 2: Send Draw 2 to the next player
-					for(int i = 0; i < 2; i++) {
-						handCardsAdded.add(deck.get(0));
-					}
-					try {
-						clients.get(usersTurn+1).sendToClient(handCardsAdded);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					handCardsAdded.removeAll(handCardsAdded);
+					// Force the next player to draw 2
+					forceDrawCards(2, data.getPlayerNum(), data.getNumPlayers());
 					cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
+					topCard = data.getCardColor()+","+data.getCardValue();
+					sendToAllClients("PutOnTop,"+topCard);
 					sendNewTurn(data.getNumPlayers());
 				}
 
+				// If 11, then it is a reverse
 				else if(Integer.parseInt(data.getCardValue()) == 11) {
-					//Reverse card: Reverse the player line up
+					// Reverse the player line up
 					int j = data.getNumPlayers();
 					for(int i = 0; i < data.getNumPlayers(); i++) {
 						reverse.put(i, clients.get(j));
@@ -396,26 +400,18 @@ public class GameServer extends AbstractServer
 						clients.put(i, reverse.get(i));
 					}
 					cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
+					topCard = data.getCardColor()+","+data.getCardValue();
+					sendToAllClients("PutOnTop,"+topCard);
 					sendNewTurn(data.getNumPlayers());
 				}
 
+				// If 12, then it is a skip
 				else if(Integer.parseInt(data.getCardValue()) == 12) {
-					//Skip card: Skips next person in the lineup
+					// Skips next person in the lineup
 					usersTurn++;
 					cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
-					sendNewTurn(data.getNumPlayers());
-				}
-				else if(data.getButtonName().equals("Red") || data.getButtonName().equals("Blue")
-						|| data.getButtonName().equals("Yellow") || data.getButtonName().equals("Green")) {
-					//Send color to next client or all clients
-					//Choosing colors
-					try {
-						clients.get(usersTurn+1).sendToClient(data.getButtonName());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
+					topCard = data.getCardColor()+","+data.getCardValue();
+					sendToAllClients("PutOnTop,"+topCard);
 					sendNewTurn(data.getNumPlayers());
 				}
 
@@ -425,8 +421,6 @@ public class GameServer extends AbstractServer
 				}
 			}
 		}
-		@SuppressWarnings("unused")
-		String idk = "test";
 	}
 
 	// Helper method to inform the correct user it is their turn
@@ -447,6 +441,25 @@ public class GameServer extends AbstractServer
 		}
 	}
 
+	// Helper method for sending drawn cards to other players
+	private void forceDrawCards(int numCards, int sender, int numPlayers) {
+		int receiver = sender + 1;
+		if ((receiver) == numPlayers) {
+			receiver = 0;
+		}
+		
+		for(int i = 0; i < numCards; i++) {
+			handCardsAdded.add(drawFromDeck());
+		}
+		try {
+			clients.get(receiver).sendToClient(handCardsAdded);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		handCardsAdded.removeAll(handCardsAdded);
+	}
+	
 	// Method that handles listening exceptions by displaying exception information.
 	public void listeningException(Throwable exception) 
 	{
@@ -466,10 +479,10 @@ public class GameServer extends AbstractServer
 
 	// Helper method to get a card from the deck and remove its entry
 	private String drawFromDeck() {
-		String card = deck.get(0);
 		if(deck.isEmpty()) {
 			deckReplacement();
 		}
+		String card = deck.get(0);
 		deck.remove(0);
 		return card;
 	}
