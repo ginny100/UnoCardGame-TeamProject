@@ -157,14 +157,16 @@ public class GameControl implements ActionListener{
 		}
 
 		// If the user is drawing from the deck
-		else if(command == "D" && gameRules.canDraw()) {
-			GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
-			try {
-				System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
-				client.sendToServer(data);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		else if(command == "D") {
+			if (gameRules.canDraw()) {
+				GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
+				try {
+					System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
+					client.sendToServer(data);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 

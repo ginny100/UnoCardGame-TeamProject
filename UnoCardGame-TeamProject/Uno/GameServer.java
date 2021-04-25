@@ -335,7 +335,7 @@ public class GameServer extends AbstractServer
 			//this is where you put the card on the stack
 			//This whole thing basically sets the rules for the class
 
-			String tokens[] = cardsPlaced.get(0).split(",");
+			String tokens[] = cardsPlaced.get(cardsPlaced.size()-1).split(",");
 			if(data.getCardColor().equals("W") && data.getCardValue().equals("1")) {
 				//The color is figured out in the gameControl
 				//Send draw 4 to the next player
