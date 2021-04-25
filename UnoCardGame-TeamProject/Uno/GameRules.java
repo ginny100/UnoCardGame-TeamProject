@@ -26,12 +26,11 @@ public class GameRules {
 		}
 	}
 	
+	// TODO include wilds (others?)
 	public boolean cardCanPlay(String card) {
-		if (card.contains(gc.topCardColor)) 
-		{
+		if (card.contains(gc.topCardColor))  {
 			return true;
-		} else if(card.substring(2).equals(Integer.toString(gc.topCardValue))) 
-		{
+		} else if(card.substring(2).equals(Integer.toString(gc.topCardValue))) {
 			return true;
 		}
 		else {

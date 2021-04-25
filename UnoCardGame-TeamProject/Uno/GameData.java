@@ -54,8 +54,8 @@ public class GameData implements Serializable{
 		this.playerNum = playerNum;
 	}
 
-	public void setNumPlayers(int nuPlayers) {
-		this.numPlayers = nuPlayers;
+	public void setNumPlayers(int numPlayers) {
+		this.numPlayers = numPlayers;
 	}
 
 	public GameData(String button, String user, int playerNum, int numPlayers) {
@@ -69,5 +69,7 @@ public class GameData implements Serializable{
 		setUserName(user);
 		setCardValue(cardValue);
 		setCardColor(cardColor);
+		setPlayerNum(playerNum);
+		setNumPlayers(numPlayers);
 	}
 }

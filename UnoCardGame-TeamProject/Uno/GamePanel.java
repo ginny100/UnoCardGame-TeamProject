@@ -34,7 +34,7 @@ public class GamePanel extends JPanel{
 	private JButton userPlayButton;
 	
 	private JLabel[] unoLabels;
-	private JLabel userUnoLabel;
+	private JLabel userCardCount;
 	
 	private JButton chooseColorButtons[];
 
@@ -225,11 +225,11 @@ public class GamePanel extends JPanel{
 		userPlayButton.setIcon(icon);
 		userPlayButton.setVisible(false);
 		
-		userUnoLabel = new JLabel();
-		userUnoLabel.setBounds(5,500,20,20);
-		add(userUnoLabel);
-		userUnoLabel.setText("7");
-		userUnoLabel.setVisible(false);
+		userCardCount = new JLabel();
+		userCardCount.setBounds(5,500,20,20);
+		add(userCardCount);
+		userCardCount.setText("7");
+		userCardCount.setVisible(false);
 		
 		
 		otherPlayerDeck = new JButton[3];
@@ -275,7 +275,7 @@ public class GamePanel extends JPanel{
 		
 		Gc.setPlayedLabels(blueCardLabels, redCardLabels, yellowCardLabels, greenCardLabels, wildCardLabels);
 		Gc.setChooseColorButtons(chooseColorButtons);
-		Gc.setUserUnoLabel(userUnoLabel);
+		Gc.setUserCardCount(userCardCount);
 		Gc.setUnoLabels(unoLabels);
 		Gc.setDecks(blueCardButtons, redCardButtons, yellowCardButtons, greenCardButtons, wildCardButtons,
 				otherPlayerDeck, deckButton, userPlayButton);

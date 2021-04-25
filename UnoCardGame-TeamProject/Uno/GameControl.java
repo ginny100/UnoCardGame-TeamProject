@@ -51,7 +51,7 @@ public class GameControl implements ActionListener{
 	private String cardTryingToPlace;
 
 	private JLabel[] unoLabels;
-	private JLabel userUnoLabel;
+	private JLabel userCardCount;
 
 	private int userPlayerNum;
 
@@ -80,8 +80,8 @@ public class GameControl implements ActionListener{
 		this.userCards = userCards;
 	}
 
-	public void setUserUnoLabel(JLabel userUnoLabel){
-		this.userUnoLabel = userUnoLabel;
+	public void setUserCardCount(JLabel userCardCount){
+		this.userCardCount = userCardCount;
 	}
 
 	public void setChooseColorButtons(JButton chooseColorButtons[]) {
@@ -108,6 +108,11 @@ public class GameControl implements ActionListener{
 
 	public void setUnoLabels(JLabel[] unoLabels) {
 		this.unoLabels= unoLabels;
+	}
+
+	// Method to update the user card count (when the player recieves a card from the server)
+	public void updateCardCount() {
+		userCardCount.setText(Integer.toString(userCards.size()));
 	}
 
 	// Setter for cards played (visible to all players when a card is played)
@@ -152,16 +157,14 @@ public class GameControl implements ActionListener{
 		}
 
 		// If the user is drawing from the deck
-		else if(command == "D") {
-			if (gameRules.canDraw()) {
-				GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
-				try {
-					System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
-					client.sendToServer(data);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		else if(command == "D" && gameRules.canDraw()) {
+			GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
+			try {
+				System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
+				client.sendToServer(data);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 
@@ -177,6 +180,7 @@ public class GameControl implements ActionListener{
 		}
 
 		// If the user is playing a wild or wild draw four
+		// TODO what the heck is going on down here w the extra if
 		else if(command == "W,0" || command == "W,1"){
 			String tokens[] = command.split(",");
 			GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
@@ -208,7 +212,7 @@ public class GameControl implements ActionListener{
 			}
 		}
 
-		// ???
+		// TODO???
 		else if(colorChanged){
 
 			String tokens[] = command.split(",");
@@ -233,7 +237,6 @@ public class GameControl implements ActionListener{
 				playCard(command);
 			}
 		}
-
 	}
 
 	public void colorChange(String color) {
@@ -247,7 +250,7 @@ public class GameControl implements ActionListener{
 	}
 
 	public void unoCall(int i) {
-		userUnoLabel.setText("2");
+		userCardCount.setText("2");
 	}
 
 	public void changeNumCards(int i, String numCards) {
@@ -330,7 +333,7 @@ public class GameControl implements ActionListener{
 	public void turnDecksOn() {
 		deckButton.setVisible(true);
 		userPlayButton.setVisible(true);
-		userUnoLabel.setVisible(true);
+		userCardCount.setVisible(true);
 
 		for(int i = 0; i < numPlayers-1; i++) {
 			otherPlayerDeck[i].setVisible(true);
@@ -345,7 +348,7 @@ public class GameControl implements ActionListener{
 		try {
 			System.out.println("Trying to place: " + data.getCardColor() + data.getCardValue());
 			userCards.remove(card);
-			userUnoLabel.setText(Integer.toString(userCards.size()));
+			updateCardCount();
 			cycleThroughHand();
 			client.sendToServer(data);
 			isUsersTurn = false;

@@ -122,6 +122,7 @@ public class GameClient extends AbstractClient
 			ArrayList<String> cards = (ArrayList<String>)arg0;
 			userCards.addAll(cards);
 			gameControl.setUserCards(userCards);
+			gameControl.updateCardCount();
 			//One array for the cards that you are forced to draw
 		}
 		
