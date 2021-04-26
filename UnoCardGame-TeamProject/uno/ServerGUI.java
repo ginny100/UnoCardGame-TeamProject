@@ -25,14 +25,14 @@ public class ServerGUI extends JFrame {
 	private JButton stop;
 	private JButton quit;
 	private GameServer server;
-	private DatabaseFile File;
+	private Database database;
 
 	public ServerGUI() {
 
 		server = new GameServer();
-		File = new DatabaseFile();
+		database = new Database();
 
-		server.setDatabase(File);
+		server.setDatabase(database);
 		
 		//this.setTitle(title);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
