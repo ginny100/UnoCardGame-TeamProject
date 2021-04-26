@@ -232,9 +232,10 @@ public class GamePanel extends JPanel{
 		userCardCount.setText("7");
 		userCardCount.setVisible(false);
 		
-		
+		// Show 4 possible labels for all possible players
+		// The user presses his own to be safe
 		otherPlayerDeck = new JButton[4];
-		unoLabels = new JLabel[4];	// Even though the user will only see the other 3, have a label for ALL players for simplicity
+		unoLabels = new JLabel[4];	
 
 		for(int i = 0; i < 4; i++) {
 			otherPlayerDeck[i] = new JButton("uno");
