@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -180,6 +181,8 @@ public class GameControl implements ActionListener{
 		// If the user is declaring Uno 
 		else if(command == "uno") {
 			GameData data = new GameData("uno", client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
+			JComponent source = (JComponent) ae.getSource();
+			data.setTarget((Integer)source.getClientProperty("target"));
 			try {
 				client.sendToServer(data);
 			} catch (IOException e) {

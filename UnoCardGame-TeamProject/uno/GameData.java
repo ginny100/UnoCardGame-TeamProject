@@ -10,6 +10,7 @@ public class GameData implements Serializable{
 	private int numCards;
 	private int playerNum;
 	private int numPlayers;
+	private int target;	// For directed UNO "attacks"
 
 	public String getButtonName() {
 		return button;
@@ -38,6 +39,10 @@ public class GameData implements Serializable{
 	public int getNumCards() {
 		return numCards;
 	}
+	
+	public int getTarget() {
+		return target;
+	}
 
 	public void setButtonName(String button) {
 		this.button = button;
@@ -65,6 +70,10 @@ public class GameData implements Serializable{
 	
 	public void setNumCards(int numCards) {
 		this.numCards = numCards;
+	}
+	
+	public void setTarget(int target) {
+		this.target = target;
 	}
 
 	public GameData(String button, String user, int numCards, int playerNum, int numPlayers) {

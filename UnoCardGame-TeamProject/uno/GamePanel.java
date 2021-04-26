@@ -241,6 +241,7 @@ public class GamePanel extends JPanel{
 			otherPlayerDeck[i] = new JButton("uno");
 			otherPlayerDeck[i].setBounds(700, (50+(200*i)),95,160);
 			otherPlayerDeck[i].addActionListener(Gc);
+			otherPlayerDeck[i].putClientProperty("target", i);	// Add attributes for processing in server
 			add(otherPlayerDeck[i]);
 			icon = new ImageIcon(GamePanel.class.getResource(path + "/Deck.png"));
 			img = icon.getImage();  
