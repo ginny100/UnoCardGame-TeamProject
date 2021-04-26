@@ -30,7 +30,7 @@ public class ServerGUI extends JFrame {
 	public ServerGUI() {
 
 		server = new GameServer();
-		database = new Database();
+		database = new Database("uno/db.properties");
 
 		server.setDatabase(database);
 		

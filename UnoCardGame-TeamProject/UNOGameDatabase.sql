@@ -7,7 +7,7 @@ DROP TABLE users;
 CREATE TABLE users
 (
 	username VARCHAR(25),
-	password VARCHAR(16)
+	password VARBINARY(16)
 );
 
 CREATE TABLE wins

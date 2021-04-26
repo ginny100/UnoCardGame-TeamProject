@@ -25,7 +25,7 @@ public class GameServer extends AbstractServer
 	private JTextArea log;
 	private JLabel status;
 	private boolean running = false;
-	private DatabaseFile File = new DatabaseFile();
+	private Database database = new Database();
 
 	private int numTwoPlayersReady;
 	private int numThreePlayersReady;
@@ -79,8 +79,8 @@ public class GameServer extends AbstractServer
 	{
 		this.status = status;
 	}
-	public void setDatabase(DatabaseFile File){
-		this.File = File;
+	public void setDatabase(Database db){
+		this.database = db;
 	}
 
 	// When the server starts, update the GUI.
@@ -142,9 +142,7 @@ public class GameServer extends AbstractServer
 		// Check the username and password with the database.
 		Object result;
 
-		File = new DatabaseFile();
-
-		if(File.UserPassCheck(data.getUsername() + " " + data.getPassword())) {
+		if(database.searchUserInfo(data.getUsername() + " " + data.getPassword())) {
 			result = "LoginSuccessful";
 			log.append("Client " + arg1.getId() + " successfully logged in as " + data.getUsername() + "\n");
 		}

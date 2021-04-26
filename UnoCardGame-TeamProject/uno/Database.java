@@ -8,12 +8,12 @@ public class Database
 {
 	private Connection conn;
 	
-	public Database()
+	public Database(String file)
 	{
 		Properties prop = new Properties();
 
 		try {
-			FileInputStream fis = new FileInputStream("Uno/db.properties");
+			FileInputStream fis = new FileInputStream(file);
 			try {
 				prop.load(fis);
 			} catch (IOException e) {
