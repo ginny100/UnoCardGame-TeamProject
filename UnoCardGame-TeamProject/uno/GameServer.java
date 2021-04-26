@@ -181,7 +181,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				users.put(numTwoPlayersReady, new User(arg1, numTwoPlayersReady));
+				users.put(numTwoPlayersReady, new User(arg1, numTwoPlayersReady, data.getUserName()));
 				numTwoPlayersReady++;
 			}
 
@@ -193,7 +193,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				users.put(numTwoPlayersReady, new User(arg1, numTwoPlayersReady));
+				users.put(numTwoPlayersReady, new User(arg1, numTwoPlayersReady, data.getUserName()));
 				numTwoPlayersReady--;
 				result2 = "GameTrue";
 			}
@@ -207,7 +207,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				users.put(numThreePlayersReady, new User(arg1, numThreePlayersReady));
+				users.put(numThreePlayersReady, new User(arg1, numThreePlayersReady, data.getUserName()));
 				numThreePlayersReady++;
 				result = "3waiting";
 			}
@@ -218,7 +218,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				users.put(numThreePlayersReady, new User(arg1, numThreePlayersReady));
+				users.put(numThreePlayersReady, new User(arg1, numThreePlayersReady, data.getUserName()));
 				numThreePlayersReady-=2;
 				result = "3waiting";
 				result2 = "GameTrue";
@@ -234,7 +234,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				users.put(numFourPlayersReady, new User(arg1, numFourPlayersReady));
+				users.put(numFourPlayersReady, new User(arg1, numFourPlayersReady, data.getUserName()));
 				numFourPlayersReady++;
 				result = "4waiting";
 			}
@@ -245,7 +245,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				users.put(numFourPlayersReady, new User(arg1, numFourPlayersReady));
+				users.put(numFourPlayersReady, new User(arg1, numFourPlayersReady, data.getUserName()));
 				numFourPlayersReady-=3;
 				result = "4waiting";
 				result2 = "GameTrue";
@@ -274,7 +274,7 @@ public class GameServer extends AbstractServer
 			try {
 				sendToAllClients("GameTrue");
 				topCard = drawFromDeck();
-				sendToAllClients("cardOnTop,"+topCard);
+				sendToAllClients("CardOnTop,"+topCard);
 				users.get(0).getConn().sendToClient("YourTurn");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -309,16 +309,26 @@ public class GameServer extends AbstractServer
 			// User is calling out another for not saying Uno on time
 			else if(data.getButtonName().equals("uno")) {
 				User victim = users.get(data.getTarget());
-				if (victim.hasSaidUno()) {
-					// TODO punish attacker here?
 
-				// Victim not safe
-				} else {
-					if (victim.getNumCards() > 1) {
+				if (!victim.hasSaidUno()) {
+					// Victim not safe
+					// If not self-accusatory and have over one card
+					if (data.getPlayerNum() != data.getTarget() && victim.getNumCards() > 1) {
 						// TODO punish attacker here?
-					} else {
+					} 
+					// If not self-accusatory and have ONE card
+					else if (data.getPlayerNum() != data.getTarget() && victim.getNumCards() == 1) {
 						targetForceDrawCards(2, data.getPlayerNum(), data.getTarget());
+						sendToAllClients(getUserCardCount());
 					}
+					// If self-accusatory and have ONE card
+					else if (data.getPlayerNum() == data.getTarget() && data.getNumCards() == 1) {
+						users.get(data.getTarget()).sayUno();
+					}
+
+					// TODO punish attacker here?
+				} else {
+
 				}
 			}
 
@@ -371,7 +381,6 @@ public class GameServer extends AbstractServer
 				}
 
 				// If 11, then it is a reverse
-				// TODO ensure the correct order is retained/clean up reverse
 				else if(Integer.parseInt(data.getCardValue()) == 11) {
 					// Reverse the player line up
 					direction *= -1;
@@ -397,6 +406,7 @@ public class GameServer extends AbstractServer
 				}
 			}
 		}
+		checkForWinner();
 		System.out.println("Completed GameData run. Turn is : " + usersTurn + " and top card is " + topCard);
 	}
 
@@ -471,7 +481,7 @@ public class GameServer extends AbstractServer
 		}
 		handCardsAdded.removeAll(handCardsAdded);
 	}
-	
+
 	// Method that handles listening exceptions by displaying exception information.
 	public void listeningException(Throwable exception) 
 	{
@@ -483,9 +493,24 @@ public class GameServer extends AbstractServer
 	}
 
 	private void firstCardsFunction(ArrayList<String> firstCards) {
-		for(int i = 0; i < 7; i++) {
+		for(int i = 0; i <3; i++) {
 			firstCards.add(deck.get(0));
 			deck.remove(0);
+		}
+	}
+
+	// Run at the end of every event, send the winner to all clients if there is one
+	private void checkForWinner() {
+		Set<Integer> keys = users.keySet();
+		Iterator<Integer> itr = keys.iterator();
+
+		Integer userNum;
+
+		while (itr.hasNext()) {
+			userNum = itr.next();
+			if(users.get(userNum).getNumCards() == 0) {
+				sendToAllClients(users.get(userNum));
+			};
 		}
 	}
 

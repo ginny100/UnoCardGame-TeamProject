@@ -32,26 +32,25 @@ public class ClientGUI extends JFrame
 		//Create the Controllers next
 		//Next, create the Controllers
 		InitialControl ic = new InitialControl(container); 
-		LoginControl lc = new LoginControl(container, client); //Probably will want to pass in ChatClient here
+		LoginControl lc = new LoginControl(container, client);
 		CreateAccountControl ac = new CreateAccountControl(container, client);
 		MenuControl mc = new MenuControl(container, client);
-		//    HostWaitControl Hwc = new HostWaitControl(container, client);
-		//    PlayerWaitControl Pwc = new PlayerWaitControl(container, client);
-		GameControl Gc = new GameControl(container, client);
+		GameControl gc = new GameControl(container, client);
+		EndControl ec = new EndControl(container, client);
 
 		client.setLoginControl(lc);
 		client.setCreateAccountControl(ac);
 		client.setMenuControl(mc);
-		client.setGameControl(Gc);
+		client.setGameControl(gc);
+		client.setEndControl(ec);
 
 		// Create the four views. (need the controller to register with the Panels
 		JPanel view1 = new InitialPanel(ic);
 		JPanel view2 = new LoginPanel(lc);
 		JPanel view3 = new CreateAccountPanel(ac);
 		JPanel view4 = new MenuPanel(mc);
-		//    JPanel view5 = new HostWaitPanel(Hwc);
-		//    JPanel view6 = new PlayerWaitPanel(Pwc);
-		JPanel view7 = new GamePanel(Gc);
+		JPanel view5 = new GamePanel(gc);
+		JPanel view6 = new EndPanel(ec);
 
 
 		// Add the views to the card layout container.
@@ -59,9 +58,7 @@ public class ClientGUI extends JFrame
 		container.add(view2, "2");
 		container.add(view3, "3");
 		container.add(view4, "4");
-		//    container.add(view5, "5");
-		//    container.add(view6, "6");
-		container.add(view7, "5");
+		container.add(view5, "5");
 
 
 		// Show the initial view in the card layout.

@@ -8,6 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import java.awt.Color;
 
 public class GamePanel extends JPanel{
@@ -33,6 +35,7 @@ public class GamePanel extends JPanel{
 	private JButton[] otherPlayerDeck;
 	private JButton deckButton;
 	private JButton userPlayButton;
+	private JLabel safetyLabel;
 	
 	private JLabel[] unoLabels;
 	private JLabel userCardCount;
@@ -251,13 +254,20 @@ public class GamePanel extends JPanel{
 			otherPlayerDeck[i].setVisible(false);
 			
 			unoLabels[i] = new JLabel();
-			unoLabels[i].setBounds(650, (100+(200*i)),20,20);
+			unoLabels[i].setBounds(590, (100+(200*i)),80,20);
 			add(unoLabels[i]);
 			unoLabels[i].setText("7");
+			unoLabels[i].setHorizontalAlignment(SwingConstants.RIGHT);
 			unoLabels[i].setVisible(false);
 		}
-		
-		
+			
+		safetyLabel = new JLabel();
+		safetyLabel.setBounds(300, 655, 120, 30);
+		safetyLabel.setText("You haven't said UNO");
+		safetyLabel.setOpaque(true);
+		safetyLabel.setBackground(Color.YELLOW);
+		add(safetyLabel);
+		safetyLabel.setVisible(false);
 		
 		String[] color = new String[4];
 		color[0] = "Blue";
@@ -282,7 +292,7 @@ public class GamePanel extends JPanel{
 		Gc.setPlayedLabels(blueCardLabels, redCardLabels, yellowCardLabels, greenCardLabels, wildCardLabels);
 		Gc.setChooseColorButtons(chooseColorButtons);
 		Gc.setUserCardCount(userCardCount);
-		Gc.setUnoLabels(unoLabels);
+		Gc.setUnoLabels(unoLabels, safetyLabel);
 		Gc.setDecks(blueCardButtons, redCardButtons, yellowCardButtons, greenCardButtons, wildCardButtons,
 				otherPlayerDeck, deckButton, userPlayButton);
 	}

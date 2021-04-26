@@ -1,6 +1,7 @@
 package uno;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -12,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class GameControl implements ActionListener{
-	// Private data fields for the container and chat client.
 	private JPanel container;
 
 	//The client that is using this
@@ -29,6 +29,8 @@ public class GameControl implements ActionListener{
 	private JButton greenCardButtons[];
 	private JButton wildCardButtons[];
 
+	// JLabel to indicate the user is vulnerable to Uno attacks
+	private JLabel safetyLabel;
 
 	// JLabels to show the last card played (beside the draw pile)
 	private JLabel blueCardLabels[];
@@ -37,7 +39,7 @@ public class GameControl implements ActionListener{
 	private JLabel greenCardLabels[];
 	private JLabel wildCardLabels[];
 
-
+	// JButtons to allow the user to interact with cards
 	private JButton[] otherPlayerDeck;
 	private JButton deckButton;
 	private JButton userPlayButton;
@@ -48,8 +50,6 @@ public class GameControl implements ActionListener{
 
 	public String topCardColor;
 	public int topCardValue;
-
-	private String cardTryingToPlace;
 
 	private JLabel[] unoLabels;
 	private JLabel userCardCount;
@@ -62,6 +62,26 @@ public class GameControl implements ActionListener{
 
 	public boolean isUsersTurn;
 	private GameRules gameRules;
+
+
+	// Constructor for the game controller.
+	public GameControl(JPanel container,GameClient client)
+	{
+		this.container = container;
+		this.client = client;
+
+		// Initialize values
+		topCardColor = "";
+		topCardValue = 0;
+		isUsersTurn = false;
+
+		userCardDisplayedValue = new String[2];
+		userCardDisplayedValue[0] = "B";
+		userCardDisplayedValue[1] = "0";
+
+		gameRules = new GameRules(this);
+	}
+
 
 	public void setUserPlayerNum(int userPlayerNum) {
 		this.userPlayerNum = userPlayerNum;
@@ -101,8 +121,9 @@ public class GameControl implements ActionListener{
 		this.instructionLabel = il;
 	}
 
-	public void setUnoLabels(JLabel[] unoLabels) {
+	public void setUnoLabels(JLabel[] unoLabels, JLabel safetyLabel) {
 		this.unoLabels= unoLabels;
+		this.safetyLabel = safetyLabel;
 	}
 
 	// Method to update the user card count (when the player receives a card from the server)
@@ -113,10 +134,34 @@ public class GameControl implements ActionListener{
 	// Server sends a list of all user cards, update the labels for the client
 	public void updateUnoLabels(Integer[] userCardCounts) {
 		for (int i = 0; i < userCardCounts.length; i++) {
-			unoLabels[i].setText(userCardCounts[i].toString());
+			if (i == userPlayerNum) {
+				unoLabels[i].setText("You | " + userCardCounts[i].toString());
+			} else {
+				unoLabels[i].setText("Player " + i + " | " + userCardCounts[i].toString());
+			}
+		}
+		if (userCardCounts[userPlayerNum] == 2 && !safetyLabel.isVisible()) {
+			safetyLabel.setVisible(true);
+			updateSafety(false);
 		}
 	}
-	
+
+	// Indicates whether or not the user is available to Uno calls
+	public void updateSafety(boolean safe) {
+		if (safe) {
+			safetyLabel.setText("You're safe!");
+			safetyLabel.setBackground(Color.GREEN);
+		} else {
+			if (userCards.size() == 1) {
+				safetyLabel.setText("You're in danger!");
+				safetyLabel.setBackground(Color.RED);
+			} else {
+				safetyLabel.setText("You aren't safe.");
+				safetyLabel.setBackground(Color.YELLOW);
+			}
+		}
+	}
+
 	// Setter for cards played (visible to all players when a card is played)
 	public void setPlayedLabels(JLabel[] blueLabels, JLabel[] redLabels, JLabel[] yellowLabels, JLabel[] greenLabels, JLabel[] wildLabels) {
 		this.blueCardLabels = blueLabels;
@@ -124,24 +169,6 @@ public class GameControl implements ActionListener{
 		this.yellowCardLabels = yellowLabels;
 		this.greenCardLabels = greenLabels;
 		this.wildCardLabels = wildLabels;
-	}
-
-	// Constructor for the game controller.
-	public GameControl(JPanel container,GameClient client)
-	{
-		this.container = container;
-		this.client = client;
-
-		// Initialize values
-		topCardColor = "";
-		topCardValue = 0;
-		isUsersTurn = false;
-
-		userCardDisplayedValue = new String[2];
-		userCardDisplayedValue[0] = "B";
-		userCardDisplayedValue[1] = "0";
-
-		gameRules = new GameRules(this);
 	}
 
 	// Handle button clicks.
@@ -218,11 +245,6 @@ public class GameControl implements ActionListener{
 		}
 	}
 
-	public void canPlaceCard() {
-		cycleThroughHand();
-		userCards.remove(cardTryingToPlace);
-	}
-
 	//Change to newCardOnTop
 	public void cardPlaced(String topCardColor, int topCardValue) {
 
@@ -256,36 +278,39 @@ public class GameControl implements ActionListener{
 		}
 	}
 
+	// Each time the user's hand is pressed, cycle through each card on its right
 	public void cycleThroughHand() {
-		if(userCards.size() <= userCardDisplayed) {
-			userCardDisplayed = 0;
-		}
-		blueCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
-		redCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
-		yellowCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
-		greenCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
-		if(userCardDisplayedValue[0].equals("W")) {
-			wildCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
-		}
+		if (userCards.size() != 0) {
+			if(userCards.size() <= userCardDisplayed) {
+				userCardDisplayed = 0;
+			}
+			blueCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
+			redCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
+			yellowCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
+			greenCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
+			if(userCardDisplayedValue[0].equals("W")) {
+				wildCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
+			}
 
-		userCardDisplayedValue = userCards.get(userCardDisplayed).split(",");
+			userCardDisplayedValue = userCards.get(userCardDisplayed).split(",");
 
-		if(userCardDisplayedValue[0].equals("B")) {
-			blueCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
+			if(userCardDisplayedValue[0].equals("B")) {
+				blueCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
+			}
+			else if (userCardDisplayedValue[0].equals("R")) {
+				redCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
+			}
+			else if (userCardDisplayedValue[0].equals("Y")) {
+				yellowCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
+			}
+			else if (userCardDisplayedValue[0].equals("G")) {
+				greenCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
+			}
+			else if (userCardDisplayedValue[0].equals("W")) {
+				wildCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
+			}
+			userCardDisplayed++;
 		}
-		else if (userCardDisplayedValue[0].equals("R")) {
-			redCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
-		}
-		else if (userCardDisplayedValue[0].equals("Y")) {
-			yellowCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
-		}
-		else if (userCardDisplayedValue[0].equals("G")) {
-			greenCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
-		}
-		else if (userCardDisplayedValue[0].equals("W")) {
-			wildCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
-		}
-		userCardDisplayed++;
 	}
 
 	public void StartGame() {
@@ -308,7 +333,6 @@ public class GameControl implements ActionListener{
 	}
 
 	private void playCard(String card) {
-		cardTryingToPlace = card;
 		String tokens[] = card.split(",");
 		GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 		try {
@@ -331,4 +355,7 @@ public class GameControl implements ActionListener{
 		instructionLabel.setText("Your Turn");
 	}
 
+	public void sendToEndScreen(User winner) {
+		
+	}
 }

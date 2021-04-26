@@ -1,3 +1,5 @@
+// Helper method class (intended for more, oops)
+
 package uno;
 
 public class GameRules {
@@ -26,20 +28,14 @@ public class GameRules {
 		}
 	}
 
-	// TODO include wilds (others?) (also remove try catch)
+	// Helper method to detect whether a card can be played or not
 	public boolean cardCanPlay(String card) {
-		try {
-			if (card.contains(gc.topCardColor))  {
-				return true;
-			} else if(card.length() > 2 && card.substring(2).equals(Integer.toString(gc.topCardValue))) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		} catch(Exception e) {
-			System.out.println("Ran into string problem again. Was doing substring of " + card + " and compared to " + gc.topCardValue);
-			e.printStackTrace();
+		if (card.contains(gc.topCardColor) || card.contains("W"))  {
+			return true;
+		} else if(card.length() > 2 && card.substring(2).equals(Integer.toString(gc.topCardValue))) {
+			return true;
+		}
+		else {
 			return false;
 		}
 	}
