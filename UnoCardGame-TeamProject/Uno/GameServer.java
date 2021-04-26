@@ -11,6 +11,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Scanner;
@@ -23,23 +24,20 @@ public class GameServer extends AbstractServer
 	private boolean running = false;
 	private DatabaseFile File = new DatabaseFile();
 
-	private String[] twoPlayerCardNum;
-	private String[] threePlayerCardNum;
-	private String[] fourPlayerCardNum;
-
 	private int numTwoPlayersReady;
 	private int numThreePlayersReady;
 	private int numFourPlayersReady;
 
 	private ArrayList<String> deck;
 	private ArrayList<String> cardsPlaced;
+	private Integer[] userCardCounts;
 	private String topCard;
 	private Deck d;
+	private int direction;
 
 	private ArrayList<String> handCardsAdded;
 
-	private HashMap<Integer, ConnectionToClient> clients;
-	private HashMap<Integer, ConnectionToClient> reverse;
+	private ArrayList<ConnectionToClient> clients;
 
 	private int usersTurn;
 
@@ -48,15 +46,14 @@ public class GameServer extends AbstractServer
 	{
 		super(12345);
 		this.setTimeout(500);
-
-		twoPlayerCardNum = new String[2];
-		threePlayerCardNum= new String[3];
-		fourPlayerCardNum= new String[4];
-
+		
+		userCardCounts = new Integer[4];
+		
 		numTwoPlayersReady = 0;
 		numThreePlayersReady = 0;
 		numFourPlayersReady = 0;
-
+		direction = 1;	// Direction of play. 1 = forward, -1 = backwards
+		
 		cardsPlaced = new ArrayList<String>();
 		topCard = new String();
 		d = new Deck();
@@ -64,10 +61,7 @@ public class GameServer extends AbstractServer
 
 		handCardsAdded = new ArrayList<String>();
 
-		clients = new HashMap<Integer, ConnectionToClient>();
-		reverse = new HashMap<Integer, ConnectionToClient>();
-
-
+		clients = new ArrayList<ConnectionToClient>();
 	}
 
 	// Getter that returns whether the server is currently running.
@@ -85,7 +79,6 @@ public class GameServer extends AbstractServer
 	{
 		this.status = status;
 	}
-
 	public void setDatabase(DatabaseFile File){
 		this.File = File;
 	}
@@ -117,9 +110,18 @@ public class GameServer extends AbstractServer
 	}
 
 	// When a client connects or disconnects, display a message in the log.
+	@Override
 	public void clientConnected(ConnectionToClient client)
 	{
 		log.append("Client " + client.getId() + " connected\n");
+	}
+
+	// Try to gracefully recover from users leaving
+	@Override
+	public void clientDisconnected(ConnectionToClient client) {
+		System.out.println("Lost connection to " + client);
+
+		clients.remove(client);
 	}
 
 	// Call all the appropriate methods
@@ -163,14 +165,12 @@ public class GameServer extends AbstractServer
 		}
 	}
 
-
 	// Handle MenuData sent to the server
 	private void handleMenuData(MenuData data, ConnectionToClient arg1)
 	{
 		Object result = null;
 		Object result2 = null;
 		ArrayList<String> firstCards = new ArrayList<String>();
-
 
 		if(data.getButtonName().equals("2")) {
 			result = "2waiting";
@@ -182,8 +182,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				clients.put(numTwoPlayersReady, arg1);
-				twoPlayerCardNum[numTwoPlayersReady]="7";
+				clients.add(numTwoPlayersReady, arg1);
 				numTwoPlayersReady++;
 			}
 
@@ -195,9 +194,9 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				clients.put(numTwoPlayersReady, arg1);
-				twoPlayerCardNum[numTwoPlayersReady]="7";
+				clients.add(numTwoPlayersReady, arg1);
 				numTwoPlayersReady--;
+				userCardCounts = new Integer[] {7,7};
 				result2 = "GameTrue";
 			}
 		}
@@ -210,8 +209,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				clients.put(numThreePlayersReady, arg1);
-				threePlayerCardNum[numThreePlayersReady]="7";
+				clients.add(numThreePlayersReady, arg1);
 				numThreePlayersReady++;
 				result = "3waiting";
 			}
@@ -222,10 +220,10 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				clients.put(numThreePlayersReady, arg1);
-				threePlayerCardNum[numThreePlayersReady]="7";
+				clients.add(numThreePlayersReady, arg1);
 				numThreePlayersReady-=2;
 				result = "3waiting";
+				userCardCounts = new Integer[] {7,7,7};
 				result2 = "GameTrue";
 			}
 
@@ -239,8 +237,7 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				clients.put(numFourPlayersReady, arg1);
-				fourPlayerCardNum[numFourPlayersReady]="7";
+				clients.add(numFourPlayersReady, arg1);
 				numFourPlayersReady++;
 				result = "4waiting";
 			}
@@ -251,10 +248,10 @@ public class GameServer extends AbstractServer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				clients.put(numFourPlayersReady, arg1);
-				fourPlayerCardNum[numFourPlayersReady]="7";
+				clients.add(numFourPlayersReady, arg1);
 				numFourPlayersReady-=3;
 				result = "4waiting";
+				userCardCounts = new Integer[] {7,7,7,7};
 				result2 = "GameTrue";
 			}
 
@@ -280,10 +277,8 @@ public class GameServer extends AbstractServer
 		if(result2 != null) {
 			try {
 				sendToAllClients("GameTrue");
-				//topCard = drawFromDeck();
-				//sendToAllClients("cardOnTop,"+topCard);
-				sendToAllClients("cardOnTop,R,10");	// Remove this <---
-				topCard = "R,10";
+				topCard = drawFromDeck();
+				sendToAllClients("cardOnTop,"+topCard);
 				clients.get(0).sendToClient("YourTurn");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -291,8 +286,7 @@ public class GameServer extends AbstractServer
 			}
 
 			usersTurn = 0;
-			//cardsPlaced.add(drawFromDeck());
-			cardsPlaced.add("R,10"); // Remove this <---
+			cardsPlaced.add(topCard);
 		}
 	}
 
@@ -311,15 +305,17 @@ public class GameServer extends AbstractServer
 					e.printStackTrace();
 				}
 				handCardsAdded.removeAll(handCardsAdded);
-
+				userCardCounts[data.getPlayerNum()] = data.getNumCards()+1;
+				sendToAllClients(userCardCounts);
 				//sendNewTurn(data.getNumPlayers()); <- enable to make draws count as a turn
 			}
 
 			// User is calling out another for not saying Uno on time
+			// TODO make this work
 			else if(data.getButtonName().equals("uno")) {
 
-				for(int i = 0; i< data.getNumPlayers(); i++) {
-					if(data.getPlayerNum() != i && twoPlayerCardNum[i].equals("1")) {
+				for(int i = 0; i < data.getNumPlayers(); i++) {
+					if(data.getPlayerNum() != i && userCardCounts[i].equals(1)) {
 						handCardsAdded.add(drawFromDeck());
 						try {
 							clients.get(i).sendToClient(handCardsAdded);
@@ -342,9 +338,6 @@ public class GameServer extends AbstractServer
 				sendNewTurn(data.getNumPlayers());
 			}
 		}
-		//!!!!!!!!!!
-		// TODO FIX BELOW
-		//!!!!!!!!!!
 		else {
 			//this is where you put the card on the stack
 			//This whole thing basically sets the rules for the class
@@ -362,7 +355,9 @@ public class GameServer extends AbstractServer
 
 				//This is because when the user places a draw 4
 				//the user also has to choose which color they want so it is still their turn
-				usersTurn--;
+				usersTurn -= direction;
+				userCardCounts[data.getPlayerNum()] = data.getNumCards()-1;
+				sendToAllClients(userCardCounts);
 				sendNewTurn(data.getNumPlayers());
 			}
 
@@ -372,47 +367,35 @@ public class GameServer extends AbstractServer
 				//If it is 0-9 then place it on top of the pile and send it back to the clients
 				//So they can show that card on top of the pile
 				if(Integer.parseInt(data.getCardValue()) <= 9 && Integer.parseInt(data.getCardValue()) >= 0) {
-					sendToAllClients("PutOnTop,"+data.getCardColor()+","+data.getCardValue());
-					cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
-					topCard = data.getCardColor()+","+data.getCardValue();
-					sendNewTurn(data.getNumPlayers());
+					playCard(data);
 				}
 
 				// If 10, then it is a draw two
 				else if(Integer.parseInt(data.getCardValue()) == 10) {
 					// Force the next player to draw 2
 					forceDrawCards(2, data.getPlayerNum(), data.getNumPlayers());
-					cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
-					topCard = data.getCardColor()+","+data.getCardValue();
-					sendToAllClients("PutOnTop,"+topCard);
-					sendNewTurn(data.getNumPlayers());
+					playCard(data);
 				}
 
 				// If 11, then it is a reverse
+				// TODO ensure the correct order is retained/clean up reverse
 				else if(Integer.parseInt(data.getCardValue()) == 11) {
 					// Reverse the player line up
-					int j = data.getNumPlayers();
-					for(int i = 0; i < data.getNumPlayers(); i++) {
-						reverse.put(i, clients.get(j));
-						j--;
-					}
-					for(int i = 0; i < data.getNumPlayers(); i++) {
-						clients.put(i, reverse.get(i));
-					}
-					cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
-					topCard = data.getCardColor()+","+data.getCardValue();
-					sendToAllClients("PutOnTop,"+topCard);
-					sendNewTurn(data.getNumPlayers());
+					direction *= -1;
+					playCard(data);
 				}
 
 				// If 12, then it is a skip
 				else if(Integer.parseInt(data.getCardValue()) == 12) {
 					// Skips next person in the lineup
-					usersTurn++;
-					cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
-					topCard = data.getCardColor()+","+data.getCardValue();
-					sendToAllClients("PutOnTop,"+topCard);
-					sendNewTurn(data.getNumPlayers());
+					if (usersTurn + direction == data.getNumPlayers()) {
+						usersTurn = 0;
+					} else if (usersTurn + direction < 0){
+						usersTurn = data.getNumPlayers()-1;
+					} else {
+						usersTurn += direction;
+					}
+					playCard(data);
 				}
 
 				// An INVALID card was attempted to be played. Don't advance the turn
@@ -423,13 +406,27 @@ public class GameServer extends AbstractServer
 		}
 	}
 
+	// Helper method to place a card onto the pile for all users
+	// Plays card provided in GameData
+	private void playCard(GameData data) {
+		cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
+		topCard = data.getCardColor()+","+data.getCardValue();
+		sendToAllClients("PutOnTop,"+topCard);
+		userCardCounts[data.getPlayerNum()] = data.getNumCards()-1;
+		sendToAllClients(userCardCounts);
+		sendNewTurn(data.getNumPlayers());
+	}
+	
 	// Helper method to inform the correct user it is their turn
 	private void sendNewTurn(int numPlayers) {
-		if((usersTurn+1) == numPlayers) {
-			usersTurn--;
+		if(usersTurn+direction == numPlayers) {
+			usersTurn = 0;
+		}
+		else if (usersTurn+direction < 0) {
+			usersTurn = numPlayers - 1;
 		}
 		else {
-			usersTurn++;
+			usersTurn += direction;
 		}
 
 		try {
@@ -443,11 +440,13 @@ public class GameServer extends AbstractServer
 
 	// Helper method for sending drawn cards to other players
 	private void forceDrawCards(int numCards, int sender, int numPlayers) {
-		int receiver = sender + 1;
-		if ((receiver) == numPlayers) {
+		int receiver = sender + direction;
+		if (receiver == numPlayers) {
 			receiver = 0;
+		} else if (receiver < 0) {
+			receiver = numPlayers-1;
 		}
-		
+
 		for(int i = 0; i < numCards; i++) {
 			handCardsAdded.add(drawFromDeck());
 		}
@@ -459,7 +458,7 @@ public class GameServer extends AbstractServer
 		}
 		handCardsAdded.removeAll(handCardsAdded);
 	}
-	
+
 	// Method that handles listening exceptions by displaying exception information.
 	public void listeningException(Throwable exception) 
 	{

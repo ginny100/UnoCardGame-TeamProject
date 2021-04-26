@@ -79,10 +79,6 @@ public class GameClient extends AbstractClient
 			else if(message.equals("YourTurn")) {
 				gameControl.usersTurn();
 			}
-//			else if(message.equals("Blue") || message.equals("Blue") || message.equals("Yellow")
-//					|| message.equals("Green")) {
-//				gameControl.colorChange(message);
-//			}
 			// If we successfully logged in, tell the login controller.
 			else if (message.equals("LoginSuccessful"))
 			{
@@ -115,15 +111,28 @@ public class GameClient extends AbstractClient
 			}
 		}
 
+		// The server sends an 
 		else if (arg0 instanceof ArrayList<?>) {
 			//The deck will be in the server for players to access
 			//The array for the cards played will be in the server
 			//One array for the cards in hand
-			ArrayList<String> cards = (ArrayList<String>)arg0;
-			userCards.addAll(cards);
-			gameControl.setUserCards(userCards);
-			gameControl.updateCardCount();
-			//One array for the cards that you are forced to draw
+			
+			if (!(((ArrayList<?>) arg0).isEmpty()) && ((ArrayList<?>)arg0).get(0) instanceof Integer) {
+				// This array represents the card count of each user
+				
+			} 
+			else if(!(((ArrayList<?>) arg0).isEmpty()) && ((ArrayList<?>)arg0).get(0) instanceof String)
+			{
+				//One array for the cards that you are forced to draw
+				ArrayList<String> cards = (ArrayList<String>)arg0;
+				userCards.addAll(cards);
+				gameControl.setUserCards(userCards);
+				gameControl.updateCardCount();   
+			}
+		}
+
+		else if (arg0 instanceof Integer[]) {
+			gameControl.updateUnoLabels((Integer[])arg0);
 		}
 		
 		else if (arg0 instanceof Integer) {

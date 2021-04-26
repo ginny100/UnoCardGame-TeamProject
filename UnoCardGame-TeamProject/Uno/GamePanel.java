@@ -3,11 +3,12 @@ package Uno;
 import java.awt.GridLayout;
 import java.awt.Image;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import java.awt.Color;
 
 public class GamePanel extends JPanel{
 	//0 = 0
@@ -232,10 +233,10 @@ public class GamePanel extends JPanel{
 		userCardCount.setVisible(false);
 		
 		
-		otherPlayerDeck = new JButton[3];
-		unoLabels = new JLabel[3];
+		otherPlayerDeck = new JButton[4];
+		unoLabels = new JLabel[4];	// Even though the user will only see the other 3, have a label for ALL players for simplicity
 
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < 4; i++) {
 			otherPlayerDeck[i] = new JButton("uno");
 			otherPlayerDeck[i].setBounds(700, (50+(200*i)),95,160);
 			otherPlayerDeck[i].addActionListener(Gc);
@@ -264,12 +265,15 @@ public class GamePanel extends JPanel{
 		
 		chooseColorButtons = new JButton[4];
 		
+		Color[] colors = {Color.blue, Color.red, Color.yellow, Color.green};
+		
 		for(int i = 0; i < 4; i++) {
-			chooseColorButtons[i] = new JButton(color[i]);
+			chooseColorButtons[i] = new JButton();
+			chooseColorButtons[i].setActionCommand(color[i]);
 			chooseColorButtons[i].setBounds((5+(50*i)), 300,20,20);
+			chooseColorButtons[i].setBackground(colors[i]);
 			chooseColorButtons[i].addActionListener(Gc);
 			add(chooseColorButtons[i]);
-			chooseColorButtons[i].setIcon(icon);
 			chooseColorButtons[i].setVisible(false);
 		}
 		

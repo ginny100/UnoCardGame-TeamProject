@@ -59,11 +59,11 @@ public class GameControl implements ActionListener{
 
 	private JButton chooseColorButtons[];
 
-//TODO	//The color the player before changed it to
-//	private String colorChangedTo;
-//	//This tells whether or not someone changed the color because I don't want to write an if statement 
-//	//checking all the colors again
-//	private boolean colorChanged;
+	//TODO	//The color the player before changed it to
+	//	private String colorChangedTo;
+	//	//This tells whether or not someone changed the color because I don't want to write an if statement 
+	//	//checking all the colors again
+	//	private boolean colorChanged;
 
 	public boolean isUsersTurn;
 	private GameRules gameRules;
@@ -110,11 +110,18 @@ public class GameControl implements ActionListener{
 		this.unoLabels= unoLabels;
 	}
 
-	// Method to update the user card count (when the player recieves a card from the server)
+	// Method to update the user card count (when the player receives a card from the server)
 	public void updateCardCount() {
 		userCardCount.setText(Integer.toString(userCards.size()));
 	}
 
+	// Server sends a list of all user cards, update the labels for the client
+	public void updateUnoLabels(Integer[] userCardCounts) {
+		for (int i = 0; i < userCardCounts.length; i++) {
+			unoLabels[i].setText(userCardCounts[i].toString());
+		}
+	}
+	
 	// Setter for cards played (visible to all players when a card is played)
 	public void setPlayedLabels(JLabel[] blueLabels, JLabel[] redLabels, JLabel[] yellowLabels, JLabel[] greenLabels, JLabel[] wildLabels) {
 		this.blueCardLabels = blueLabels;
@@ -159,7 +166,7 @@ public class GameControl implements ActionListener{
 		// If the user is drawing from the deck
 		else if(command == "D") {
 			if (gameRules.canDraw()) {
-				GameData data = new GameData("DrawCard", client.getUserName(), userPlayerNum, numPlayers);
+				GameData data = new GameData("DrawCard", client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 				try {
 					System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
 					client.sendToServer(data);
@@ -172,7 +179,7 @@ public class GameControl implements ActionListener{
 
 		// If the user is declaring Uno 
 		else if(command == "uno") {
-			GameData data = new GameData("uno", client.getUserName(), userPlayerNum, numPlayers);
+			GameData data = new GameData("uno", client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 			try {
 				client.sendToServer(data);
 			} catch (IOException e) {
@@ -183,25 +190,24 @@ public class GameControl implements ActionListener{
 
 		// If the user is playing a wild or wild draw four
 		// TODO what the heck is going on down here w the extra if
-		else if(command == "W,0" || command == "W,1"){
+		else if(isUsersTurn && (command == "W,0" || command == "W,1")){
 			String tokens[] = command.split(",");
-			GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
+			GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 			for(int i = 0; i < 4; i++) {
 				chooseColorButtons[i].setVisible(true);
 			}
-			if(command == "W,1") {
-				try {
-					client.sendToServer(data);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			try {
+				client.sendToServer(data);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			playCard(command);
 		}
 
 		// If the user is changing the color in play
 		else if(command == "Blue" || command == "Red" || command == "Yellow" || command == "Green") {
-			GameData data = new GameData(command, client.getUserName(), userPlayerNum, numPlayers);
+			GameData data = new GameData(command, client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 
 			try {
 				client.sendToServer(data);
@@ -212,39 +218,17 @@ public class GameControl implements ActionListener{
 			for(int i = 0; i < 4; i++) {
 				chooseColorButtons[i].setVisible(false);
 			}
+			isUsersTurn = false;
+			instructionLabel.setText("Waiting for your turn");
 		}
-
-		// TODO???
-//		else if(colorChanged){
-//
-//			String tokens[] = command.split(",");
-//			if(tokens[0] != colorChangedTo) {
-//				//Display an error
-//			}
-//			else {
-//				GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
-//				try {
-//					client.sendToServer(data);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//			colorChanged = false;
-//		}
 
 		// If user is trying to place a normal card
 		else {
-			if (gameRules.cardCanPlay(command)) {
+			if (isUsersTurn && gameRules.cardCanPlay(command)) {
 				playCard(command);
 			}
 		}
 	}
-
-//	public void colorChange(String color) {
-//		colorChangedTo = color;
-//		colorChanged = true;
-//	}
 
 	public void canPlaceCard() {
 		cycleThroughHand();
@@ -293,6 +277,9 @@ public class GameControl implements ActionListener{
 	}
 
 	public void cycleThroughHand() {
+		if(userCards.size() <= userCardDisplayed) {
+			userCardDisplayed = 0;
+		}
 		blueCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
 		redCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
 		yellowCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
@@ -319,9 +306,6 @@ public class GameControl implements ActionListener{
 			wildCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
 		}
 		userCardDisplayed++;
-		if(userCards.size() == userCardDisplayed) {
-			userCardDisplayed = 0;
-		}
 	}
 
 	public void StartGame() {
@@ -346,7 +330,7 @@ public class GameControl implements ActionListener{
 	private void playCard(String card) {
 		cardTryingToPlace = card;
 		String tokens[] = card.split(",");
-		GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userPlayerNum, numPlayers);
+		GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 		try {
 			System.out.println("Trying to place: " + data.getCardColor() + data.getCardValue());
 			userCards.remove(card);

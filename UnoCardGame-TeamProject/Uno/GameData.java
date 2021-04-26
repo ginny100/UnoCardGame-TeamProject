@@ -7,6 +7,7 @@ public class GameData implements Serializable{
 	private String user;
 	private String cardColor;
 	private String cardValue;
+	private int numCards;
 	private int playerNum;
 	private int numPlayers;
 
@@ -33,6 +34,10 @@ public class GameData implements Serializable{
 	public int getNumPlayers() {
 		return numPlayers;
 	}
+	
+	public int getNumCards() {
+		return numCards;
+	}
 
 	public void setButtonName(String button) {
 		this.button = button;
@@ -57,19 +62,25 @@ public class GameData implements Serializable{
 	public void setNumPlayers(int numPlayers) {
 		this.numPlayers = numPlayers;
 	}
+	
+	public void setNumCards(int numCards) {
+		this.numCards = numCards;
+	}
 
-	public GameData(String button, String user, int playerNum, int numPlayers) {
+	public GameData(String button, String user, int numCards, int playerNum, int numPlayers) {
 		setButtonName(button);
 		setPlayerNum(playerNum);
 		setUserName(user);
 		setNumPlayers(numPlayers);
+		setNumCards(numCards);
 	}
 
-	public GameData(String cardColor, String cardValue, String user, int playerNum, int numPlayers) {
+	public GameData(String cardColor, String cardValue, String user, int numCards, int playerNum, int numPlayers) {
 		setUserName(user);
 		setCardValue(cardValue);
 		setCardColor(cardColor);
 		setPlayerNum(playerNum);
 		setNumPlayers(numPlayers);
+		setNumCards(numCards);
 	}
 }
