@@ -37,7 +37,7 @@ public class Database
 		}
 	}
 
-	public ArrayList<String> searchUserInfo(String query)
+	private ArrayList<String> searchUserInfo(String query)
 	{	
 		query = "SELECT username, aes_decrypt(password, 'key') FROM user;";
 		
@@ -73,7 +73,11 @@ public class Database
 		return result;
 	}
 
-	public ArrayList<String> searchUsername(String query)
+	public boolean validateLogin(String username, String password) {
+		
+	}
+	
+	private ArrayList<String> searchUsername(String query)
 	{
 		query = "SELECT username FROM user;";
 		

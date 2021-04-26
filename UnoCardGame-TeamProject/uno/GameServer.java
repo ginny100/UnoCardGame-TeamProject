@@ -132,6 +132,8 @@ public class GameServer extends AbstractServer
 			handleLoginData((LoginData)arg0, arg1);
 		} else if (arg0 instanceof GameData) {
 			handleGameData((GameData)arg0, arg1);
+		} else if (arg0 instanceof CreateAccountData) {
+			handleCreateAccountData((CreateAccountData)arg0, arg1);
 		} else {
 			System.out.println("Unexpected type of data recieved");
 		}
@@ -161,6 +163,15 @@ public class GameServer extends AbstractServer
 		{
 			return;
 		}
+	}
+	
+	// Validate CreateAccountData sent to the server
+	private void handleCreateAccountData(CreateAccountData data, ConnectionToClient conn) {
+		String username = data.getUsername();
+		String password = data.getPassword();
+		
+		// Ensure username doesn't already exist
+		if (database.validate)
 	}
 	
 	// Handle MenuData sent to the server
