@@ -307,7 +307,6 @@ public class GameServer extends AbstractServer
 			}
 
 			// User is calling out another for not saying Uno on time
-			// TODO make this work
 			else if(data.getButtonName().equals("uno")) {
 				User victim = users.get(data.getTarget());
 				if (victim.hasSaidUno()) {
@@ -318,7 +317,7 @@ public class GameServer extends AbstractServer
 					if (victim.getNumCards() > 1) {
 						// TODO punish attacker here?
 					} else {
-						forceDrawCards(2, data.getPlayerNum(), data.getNumPlayers());
+						targetForceDrawCards(2, data.getPlayerNum(), data.getTarget());
 					}
 				}
 			}
@@ -326,9 +325,9 @@ public class GameServer extends AbstractServer
 			// User is changing the color (with a wild)
 			else if(data.getButtonName().equals("Red") || data.getButtonName().equals("Blue")
 					|| data.getButtonName().equals("Yellow") || data.getButtonName().equals("Green")) {
-				//clients.get(usersTurn+1).sendToClient(data.getButtonName()); TODO
 				// Ensure the next user knows what color it is by displaying the previous card in the new color
-				sendToAllClients("PutOnTop,"+data.getButtonName().substring(0,1)+","+topCard.substring(2));
+				topCard = data.getButtonName().substring(0,1) + "," + topCard.substring(2); 
+				sendToAllClients("PutOnTop,"+topCard);
 				sendNewTurn(data.getNumPlayers());
 			}
 		}
@@ -398,6 +397,7 @@ public class GameServer extends AbstractServer
 				}
 			}
 		}
+		System.out.println("Completed GameData run. Turn is : " + usersTurn + " and top card is " + topCard);
 	}
 
 	// Helper method to place a card onto the pile for all users
@@ -456,6 +456,22 @@ public class GameServer extends AbstractServer
 		handCardsAdded.removeAll(handCardsAdded);
 	}
 
+	// Helper method (mostly unnecessary) who forces specific users to draw, regardless of order
+	private void targetForceDrawCards(int numCards, int sender, int receiver) {
+		for(int i = 0; i < numCards; i++) {
+			handCardsAdded.add(drawFromDeck());
+		}
+		try {
+			User recipient = users.get(receiver);
+			recipient.getConn().sendToClient(handCardsAdded);
+			recipient.addNumCards(numCards);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		handCardsAdded.removeAll(handCardsAdded);
+	}
+	
 	// Method that handles listening exceptions by displaying exception information.
 	public void listeningException(Throwable exception) 
 	{
