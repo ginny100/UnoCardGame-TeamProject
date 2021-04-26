@@ -8,33 +8,32 @@ public class Database
 {
 	private Connection conn;
 	
-	public Database(String file)
+	public Database()
 	{
+		// Read from the properties
 		Properties prop = new Properties();
-
 		try {
-			FileInputStream fis = new FileInputStream(file);
-			try {
-				prop.load(fis);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			FileInputStream fis = new FileInputStream("uno/db.properties");
+			prop.load(fis);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		String user = prop.getProperty("user");
 		String pass = prop.getProperty("password");
 		String url = prop.getProperty("url");
-
+		
 		try {
 			conn = DriverManager.getConnection(url, user, pass);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	// Basic getter for the connection object
+	public Connection getConnection()
+	{
+		return conn;
 	}
 
 	private ArrayList<String> searchUserInfo(String query)
@@ -74,7 +73,8 @@ public class Database
 	}
 
 	public boolean validateLogin(String username, String password) {
-		
+		searchUserInfo(username);
+		return true;
 	}
 	
 	private ArrayList<String> searchUsername(String query)
@@ -111,6 +111,14 @@ public class Database
 			return null;
 		}
 		return result;
+	}
+	
+	public boolean usernameIsUnique(String username) {
+		if (searchUsername(username).isEmpty()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	public void executeDML(String dml) throws SQLException

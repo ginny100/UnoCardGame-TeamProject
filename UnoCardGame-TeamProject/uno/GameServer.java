@@ -25,7 +25,7 @@ public class GameServer extends AbstractServer
 	private JTextArea log;
 	private JLabel status;
 	private boolean running = false;
-	private Database database = new Database();
+	private Database database;
 
 	private int numTwoPlayersReady;
 	private int numThreePlayersReady;
@@ -144,7 +144,7 @@ public class GameServer extends AbstractServer
 		// Check the username and password with the database.
 		Object result;
 
-		if(database.searchUserInfo(data.getUsername() + " " + data.getPassword())) {
+		if(database.validateLogin(data.getUsername(), data.getPassword())) {
 			result = "LoginSuccessful";
 			log.append("Client " + arg1.getId() + " successfully logged in as " + data.getUsername() + "\n");
 		}
@@ -171,7 +171,14 @@ public class GameServer extends AbstractServer
 		String password = data.getPassword();
 		
 		// Ensure username doesn't already exist
-		if (database.validate)
+		if (database.usernameIsUnique(username)) {
+			try {
+				conn.sendToClient("CreateAccountSuccessful");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	// Handle MenuData sent to the server
