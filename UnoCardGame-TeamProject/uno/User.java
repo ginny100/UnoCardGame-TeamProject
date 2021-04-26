@@ -19,10 +19,6 @@ public class User {
 		this.playerNum = playerNum;
 	}
 	
-	public void setHandSize(int numCards) {
-		handSize = numCards;
-	}
-	
 	public void addNumCards(int numCards) {
 		if ((handSize == 1) && (numCards > 0)) {
 			// The user is back in jeopardy, safety has worn off

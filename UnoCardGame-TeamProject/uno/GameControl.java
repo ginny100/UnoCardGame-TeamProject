@@ -60,12 +60,6 @@ public class GameControl implements ActionListener{
 
 	private JButton chooseColorButtons[];
 
-	//TODO	//The color the player before changed it to
-	//	private String colorChangedTo;
-	//	//This tells whether or not someone changed the color because I don't want to write an if statement 
-	//	//checking all the colors again
-	//	private boolean colorChanged;
-
 	public boolean isUsersTurn;
 	private GameRules gameRules;
 
@@ -192,18 +186,9 @@ public class GameControl implements ActionListener{
 		}
 
 		// If the user is playing a wild or wild draw four
-		// TODO what the heck is going on down here w the extra if
 		else if(isUsersTurn && (command == "W,0" || command == "W,1")){
-			String tokens[] = command.split(",");
-			GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 			for(int i = 0; i < 4; i++) {
 				chooseColorButtons[i].setVisible(true);
-			}
-			try {
-				client.sendToServer(data);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			playCard(command);
 		}
@@ -236,14 +221,6 @@ public class GameControl implements ActionListener{
 	public void canPlaceCard() {
 		cycleThroughHand();
 		userCards.remove(cardTryingToPlace);
-	}
-
-	public void unoCall(int i) {
-		userCardCount.setText("2");
-	}
-
-	public void changeNumCards(int i, String numCards) {
-		unoLabels[i].setText(numCards);
 	}
 
 	//Change to newCardOnTop
@@ -324,7 +301,7 @@ public class GameControl implements ActionListener{
 		userPlayButton.setVisible(true);
 		userCardCount.setVisible(true);
 
-		for(int i = 0; i < numPlayers-1; i++) {
+		for(int i = 0; i < numPlayers; i++) {
 			otherPlayerDeck[i].setVisible(true);
 			unoLabels[i].setVisible(true);
 		}

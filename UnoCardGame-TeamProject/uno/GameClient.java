@@ -73,9 +73,6 @@ public class GameClient extends AbstractClient
 			else if(message.equals("CanPlace")) {
 				gameControl.canPlaceCard();
 			}
-			else if(messages[0].equals("uno")) {
-				gameControl.unoCall(Integer.parseInt(messages[1]));
-			}
 			else if(message.equals("YourTurn")) {
 				gameControl.usersTurn();
 			}

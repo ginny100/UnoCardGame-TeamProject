@@ -301,7 +301,7 @@ public class GameServer extends AbstractServer
 					e.printStackTrace();
 				}
 				handCardsAdded.removeAll(handCardsAdded);
-				users.get(data.getPlayerNum()).addNumCards(-1);
+				users.get(data.getPlayerNum()).addNumCards(1);
 				sendToAllClients(getUserCardCount());
 				//sendNewTurn(data.getNumPlayers()); <- enable to make draws count as a turn
 			}
@@ -403,6 +403,7 @@ public class GameServer extends AbstractServer
 	// Helper method to place a card onto the pile for all users
 	// Plays card provided in GameData
 	private void playCard(GameData data) {
+		System.out.println("Placing " + data.getCardColor() + data.getCardValue());
 		cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
 		topCard = data.getCardColor()+","+data.getCardValue();
 		sendToAllClients("PutOnTop,"+topCard);
