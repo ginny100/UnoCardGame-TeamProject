@@ -53,7 +53,7 @@ public class EndPanel extends JPanel {
 		resultLabel.setText("You " + status);
 	}
 	
-	public void winnerInfo(int playerNum, String username) {
-		subResultLabel.setText("Player " + playerNum + "("+username+") Won");
+	public void winnerInfo(String playerNum, String username) {
+		subResultLabel.setText("Player " + playerNum + " ("+username+") Won");
 	}
 }

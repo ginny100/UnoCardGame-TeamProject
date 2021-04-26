@@ -1,6 +1,7 @@
 package uno;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import ocsf.server.ConnectionToClient;
 
@@ -15,7 +16,7 @@ public class User {
 		this.conn = conn;
 		this.playerNum = playerNum;
 		saidUno = false;
-		handSize = 3;
+		handSize = 7;
 	}
 	
 	public User(ConnectionToClient conn, int playerNum, String username) {
@@ -67,6 +68,14 @@ public class User {
 	
 	public int getNumCards() {
 		return handSize;
+	}
+	
+	public int getPlayerNum() {
+		return playerNum;
+	}
+	
+	public String getUsername() {
+		return username;
 	}
 
 }

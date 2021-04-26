@@ -354,8 +354,31 @@ public class GameControl implements ActionListener{
 		isUsersTurn = true;
 		instructionLabel.setText("Your Turn");
 	}
+	
+	// Once the game is over, send the player to the end screen
+	// Be sure to clean up all old values in case the player plays again
+	public void sendToEndScreen(String playerNum, String username) {
+		EndPanel endPanel = (EndPanel) container.getComponent(5);
 
-	public void sendToEndScreen(User winner) {
+		// Reinitialize values
+		topCardColor = "";
+		topCardValue = 0;
+		isUsersTurn = false;
+
+		userCardDisplayedValue = new String[2];
+		userCardDisplayedValue[0] = "B";
+		userCardDisplayedValue[1] = "0";
+
+		gameRules = new GameRules(this);
 		
+		if (playerNum.equals(((Integer)userPlayerNum).toString())) {
+			endPanel.setStatus("Win!");
+		} else {
+			endPanel.setStatus("Lose");
+		}
+		endPanel.winnerInfo(playerNum, username);
+		
+		CardLayout cardLayout = (CardLayout)container.getLayout();
+		cardLayout.show(container, "6");
 	}
 }

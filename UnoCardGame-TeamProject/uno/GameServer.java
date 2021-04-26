@@ -31,16 +31,15 @@ public class GameServer extends AbstractServer
 	private int numThreePlayersReady;
 	private int numFourPlayersReady;
 
-	private ArrayList<String> deck;
+	private ArrayList<String> stringDeck;
 	private ArrayList<String> cardsPlaced;
 	private String topCard;
-	private Deck d;
+	private Deck cardDeck;
 	private int direction;
 
 	private ArrayList<String> handCardsAdded;
 
 	private Hashtable<Integer, User> users;
-	//private ArrayList<ConnectionToClient> FIXMEPLEASEAHHH;
 
 	private int usersTurn;
 
@@ -57,8 +56,8 @@ public class GameServer extends AbstractServer
 
 		cardsPlaced = new ArrayList<String>();
 		topCard = new String();
-		d = new Deck();
-		deck = d.getDeck();
+		cardDeck = new Deck();
+		stringDeck = cardDeck.getDeck();
 
 		handCardsAdded = new ArrayList<String>();
 
@@ -99,6 +98,7 @@ public class GameServer extends AbstractServer
 		status.setText("Stopped");
 		status.setForeground(Color.RED);
 		log.append("Server stopped accepting new clients - press Listen to start accepting new clients\n");
+		reset();
 	}
 
 	// When the server closes completely, update the GUI.
@@ -121,6 +121,7 @@ public class GameServer extends AbstractServer
 	@Override
 	public void clientDisconnected(ConnectionToClient client) {
 		System.out.println("Lost connection to " + client);
+		reset();
 	}
 
 	// Call all the appropriate methods
@@ -163,7 +164,7 @@ public class GameServer extends AbstractServer
 			return;
 		}
 	}
-
+	
 	// Handle MenuData sent to the server
 	private void handleMenuData(MenuData data, ConnectionToClient arg1)
 	{
@@ -286,6 +287,7 @@ public class GameServer extends AbstractServer
 		}
 	}
 
+	
 	// Handle GameData sent to the server
 	public void handleGameData(GameData data, ConnectionToClient arg1) {
 		System.out.println("GameData: " + data.getCardColor() + data.getCardValue() + " from " +data.getUserName());
@@ -411,6 +413,9 @@ public class GameServer extends AbstractServer
 	}
 
 	// Helper method to place a card onto the pile for all users
+	
+	
+	
 	// Plays card provided in GameData
 	private void playCard(GameData data) {
 		System.out.println("Placing " + data.getCardColor() + data.getCardValue());
@@ -483,6 +488,7 @@ public class GameServer extends AbstractServer
 	}
 
 	// Method that handles listening exceptions by displaying exception information.
+	@Override
 	public void listeningException(Throwable exception) 
 	{
 		running = false;
@@ -492,14 +498,16 @@ public class GameServer extends AbstractServer
 		log.append("Press Listen to restart server\n");
 	}
 
+	
 	private void firstCardsFunction(ArrayList<String> firstCards) {
-		for(int i = 0; i <3; i++) {
-			firstCards.add(deck.get(0));
-			deck.remove(0);
+		for(int i = 0; i < 7; i++) {
+			firstCards.add(stringDeck.get(0));
+			stringDeck.remove(0);
 		}
 	}
 
 	// Run at the end of every event, send the winner to all clients if there is one
+	
 	private void checkForWinner() {
 		Set<Integer> keys = users.keySet();
 		Iterator<Integer> itr = keys.iterator();
@@ -509,7 +517,8 @@ public class GameServer extends AbstractServer
 		while (itr.hasNext()) {
 			userNum = itr.next();
 			if(users.get(userNum).getNumCards() == 0) {
-				sendToAllClients(users.get(userNum));
+				sendToAllClients("Winner," + userNum.toString() + "," + users.get(userNum).getUsername());
+				reset();
 			};
 		}
 	}
@@ -531,19 +540,37 @@ public class GameServer extends AbstractServer
 	}
 
 	// Helper method to get a card from the deck and remove its entry
+	
 	private String drawFromDeck() {
-		if(deck.isEmpty()) {
+		if(stringDeck.isEmpty()) {
 			deckReplacement();
 		}
-		String card = deck.get(0);
-		deck.remove(0);
+		String card = stringDeck.get(0);
+		stringDeck.remove(0);
 		return card;
 	}
 
 	private void deckReplacement() {
-		deck.addAll(cardsPlaced);
-		d.Shuffle(deck);
+		stringDeck.addAll(cardsPlaced);
+		cardDeck.Shuffle(stringDeck);
 		cardsPlaced.removeAll(cardsPlaced);
+	}
+	
+	public void reset() {
+		numTwoPlayersReady = 0;
+		numThreePlayersReady = 0;
+		numFourPlayersReady = 0;
+		direction = 1;
+
+		cardsPlaced = new ArrayList<String>();
+		topCard = new String();
+		cardDeck = new Deck();
+		stringDeck = cardDeck.getDeck();
+
+		handCardsAdded = new ArrayList<String>();
+
+		users = new Hashtable<Integer, User>();
+		usersTurn = 0;
 	}
 
 }

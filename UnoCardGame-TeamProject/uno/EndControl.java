@@ -23,7 +23,7 @@ public class EndControl implements ActionListener{
 		// Get the name of the button clicked.
 		String command = ae.getActionCommand();
 
-		// The Exit button closes the application.
+		// The Exit button logs the user out
 		if (command == "Exit")
 		{
 			CardLayout cardLayout = (CardLayout)container.getLayout();
@@ -32,7 +32,8 @@ public class EndControl implements ActionListener{
 		
 		// The Play Again button brings the user back to the main menu and allows them to enter a new game
 		else if (command == "Play Again") {
-			//TODO
+			CardLayout cardLayout = (CardLayout)container.getLayout();
+			cardLayout.show(container, "4");
 		}
 
 

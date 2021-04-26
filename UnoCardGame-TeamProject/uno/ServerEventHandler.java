@@ -67,6 +67,7 @@ public class ServerEventHandler implements ActionListener{
 		else if(e.getSource() == ServerStop) {
 			if(server.isListening()) {
 				server.stopListening();
+				server.reset();
 			}
 			else {
 				log.append("Server not currently started\n");

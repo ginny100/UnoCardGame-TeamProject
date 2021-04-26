@@ -83,6 +83,11 @@ public class GameClient extends AbstractClient
 				gameControl.updateSafety(Boolean.parseBoolean(messages[1]));
 			}
 			
+			// Server sends each client the winner of the game
+			else if (messages[0].equals("Winner")) {
+				gameControl.sendToEndScreen(messages[1], messages[2]);
+			}
+			
 			// The server sends individual users this to indicate it is their turn
 			else if(message.equals("YourTurn")) {
 				gameControl.usersTurn();
@@ -143,11 +148,6 @@ public class GameClient extends AbstractClient
 		// Server sends each client the number they are in the game
 		else if (arg0 instanceof Integer) {
 			gameControl.setUserPlayerNum(Integer.parseInt(arg0.toString()));
-		}
-		
-		// Server sends each client the winner of the game
-		else if (arg0 instanceof User) {
-			gameControl.sendToEndScreen((User)arg0);
 		}
 
 		// If we received an Error, figure out where to display it.
