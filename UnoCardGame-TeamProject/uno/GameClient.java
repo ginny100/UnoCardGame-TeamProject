@@ -167,6 +167,11 @@ public class GameClient extends AbstractClient
 			{
 				createAccountControl.displayError(error.getMessage());
 			}
+			
+			// Display error from failure to update score
+			else if (error.getType().equals("UpdateScore")) {
+				endControl.displayError(error.getMessage());
+			}
 		}
 	}  
 

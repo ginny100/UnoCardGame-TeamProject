@@ -538,7 +538,16 @@ public class GameServer extends AbstractServer
 			userNum = itr.next();
 			if(users.get(userNum).getNumCards() == 0) {
 				sendToAllClients("Winner," + userNum.toString() + "," + users.get(userNum).getUsername());
-				database.increaseWinCount(users.get(userNum).getUsername());
+				
+				// Attempt to track user wins, report error if fail
+				if (!database.increaseWinCount(users.get(userNum).getUsername())) {
+					try {
+						users.get(userNum).getConn().sendToClient(new Error("Error while updating win count", "UpdateScore"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
 				reset();
 			};
 		}
