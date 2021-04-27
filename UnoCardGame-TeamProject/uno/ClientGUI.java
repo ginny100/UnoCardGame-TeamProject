@@ -11,7 +11,7 @@ public class ClientGUI extends JFrame
 	{
 		getContentPane().setBackground(new Color(176, 224, 230));
 		GameClient client = new GameClient(host);
-		client.setHost("localhost");
+		client.setHost(host);
 		client.setPort(8300);
 		try
 		{
