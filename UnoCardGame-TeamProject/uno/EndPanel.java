@@ -3,19 +3,19 @@ package uno;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class EndPanel extends JPanel {
-	
+public class EndPanel extends JPanel
+{
 	private JLabel errorLabel;
 	private JLabel resultLabel;
 	private JLabel subResultLabel;
 	
-	public EndPanel(EndControl ec) {
-		// Create a panel for the error label at the top of the GUI.
+	public EndPanel(EndControl ec)
+	{
+	    // Create a panel for the error label at the top of the GUI.
 	    JPanel labelPanel = new JPanel(new GridLayout(1, 1, 5, 5));
 	    errorLabel = new JLabel("", JLabel.CENTER);
 	    errorLabel.setForeground(Color.RED);
@@ -48,16 +48,19 @@ public class EndPanel extends JPanel {
 	}
 
 	// Allows access to the errorLabel
-	public void setError(String error) {
+	public void setError(String error) 
+	{
 		errorLabel.setText(error);
 	}
 	
 	// GameController can call these two methods to provide the right information before displaying it
-	public void setStatus(String status) {
+	public void setStatus(String status) 
+	{
 		resultLabel.setText("You " + status);
 	}
 	
-	public void winnerInfo(String playerNum, String username) {
+	public void winnerInfo(String playerNum, String username) 
+	{
 		subResultLabel.setText("Player " + playerNum + " ("+username+") Won");
 	}
 }
