@@ -56,6 +56,7 @@ public class ServerEventHandler implements ActionListener{
 			if(server.isListening()) {
 				try {
 					server.close();
+					server.reset();
 				}catch(IOException e1){
 					e1.printStackTrace();
 				}
@@ -67,7 +68,6 @@ public class ServerEventHandler implements ActionListener{
 		else if(e.getSource() == ServerStop) {
 			if(server.isListening()) {
 				server.stopListening();
-				server.reset();
 			}
 			else {
 				log.append("Server not currently started\n");

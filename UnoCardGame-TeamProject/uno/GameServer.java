@@ -98,7 +98,6 @@ public class GameServer extends AbstractServer
 		status.setText("Stopped");
 		status.setForeground(Color.RED);
 		log.append("Server stopped accepting new clients - press Listen to start accepting new clients\n");
-		reset();
 	}
 
 	// When the server closes completely, update the GUI.
@@ -164,23 +163,32 @@ public class GameServer extends AbstractServer
 			return;
 		}
 	}
-	
+
 	// Validate CreateAccountData sent to the server
 	private void handleCreateAccountData(CreateAccountData data, ConnectionToClient conn) {
 		String username = data.getUsername();
 		String password = data.getPassword();
+		Object returnMsg = "";
 		
 		// Ensure username doesn't already exist
 		if (database.usernameIsUnique(username)) {
-			try {
-				conn.sendToClient("CreateAccountSuccessful");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (database.createNewAccount(username, password)) {
+				returnMsg = "CreateAccountSuccessful";
 			}
+			else {
+				returnMsg = new Error("Error while creating your account", "CreateAccount");
+			}
+		} 
+		else {
+			returnMsg = new Error("Username is already taken", "CreateAccount");
+		}
+		try {
+			conn.sendToClient(returnMsg);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
-	
+
 	// Handle MenuData sent to the server
 	private void handleMenuData(MenuData data, ConnectionToClient arg1)
 	{
@@ -303,7 +311,7 @@ public class GameServer extends AbstractServer
 		}
 	}
 
-	
+
 	// Handle GameData sent to the server
 	public void handleGameData(GameData data, ConnectionToClient arg1) {
 		System.out.println("GameData: " + data.getCardColor() + data.getCardValue() + " from " +data.getUserName());
@@ -429,9 +437,6 @@ public class GameServer extends AbstractServer
 	}
 
 	// Helper method to place a card onto the pile for all users
-	
-	
-	
 	// Plays card provided in GameData
 	private void playCard(GameData data) {
 		System.out.println("Placing " + data.getCardColor() + data.getCardValue());
@@ -514,7 +519,7 @@ public class GameServer extends AbstractServer
 		log.append("Press Listen to restart server\n");
 	}
 
-	
+
 	private void firstCardsFunction(ArrayList<String> firstCards) {
 		for(int i = 0; i < 7; i++) {
 			firstCards.add(stringDeck.get(0));
@@ -523,7 +528,6 @@ public class GameServer extends AbstractServer
 	}
 
 	// Run at the end of every event, send the winner to all clients if there is one
-	
 	private void checkForWinner() {
 		Set<Integer> keys = users.keySet();
 		Iterator<Integer> itr = keys.iterator();
@@ -534,6 +538,7 @@ public class GameServer extends AbstractServer
 			userNum = itr.next();
 			if(users.get(userNum).getNumCards() == 0) {
 				sendToAllClients("Winner," + userNum.toString() + "," + users.get(userNum).getUsername());
+				database.increaseWinCount(users.get(userNum).getUsername());
 				reset();
 			};
 		}
@@ -556,7 +561,6 @@ public class GameServer extends AbstractServer
 	}
 
 	// Helper method to get a card from the deck and remove its entry
-	
 	private String drawFromDeck() {
 		if(stringDeck.isEmpty()) {
 			deckReplacement();
@@ -571,7 +575,7 @@ public class GameServer extends AbstractServer
 		cardDeck.Shuffle(stringDeck);
 		cardsPlaced.removeAll(cardsPlaced);
 	}
-	
+
 	public void reset() {
 		numTwoPlayersReady = 0;
 		numThreePlayersReady = 0;
