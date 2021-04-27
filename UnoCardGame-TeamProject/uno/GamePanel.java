@@ -1,15 +1,11 @@
 package uno;
 
-import java.awt.GridLayout;
 import java.awt.Image;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import java.awt.Color;
 
 public class GamePanel extends JPanel{

@@ -1,8 +1,6 @@
 package uno;
 
 import java.io.IOException;
-import java.io.Serializable;
-
 import ocsf.server.ConnectionToClient;
 
 public class User {

@@ -1,12 +1,6 @@
 package uno;
 
-import java.awt.CardLayout;
-import java.awt.Color;
 import java.util.ArrayList;
-
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import ocsf.client.AbstractClient;
 

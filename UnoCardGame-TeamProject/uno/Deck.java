@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class Deck {
 	private ArrayList<String> deck;
-	private String randomCard;
 	private String[] colors;
 
 	public Deck() {

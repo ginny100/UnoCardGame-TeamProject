@@ -7,7 +7,6 @@ public class CreateAccountData implements Serializable
 	// Private data fields for the username and password.
 	  private String username;
 	  private String password;
-	  private String password2;
 	  
 	  // Getters for the username and password.
 	  public String getUsername()
