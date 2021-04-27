@@ -2,15 +2,15 @@ package uno;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class CreateAccountPanel extends JPanel{
-	 // Private data fields for the important GUI components.
+public class CreateAccountPanel extends JPanel
+{
+	  // Private data fields for the important GUI components.
 	  private JTextField usernameField;
 	  private JPasswordField passwordField;
 	  private JPasswordField passwordField2;
