@@ -95,7 +95,6 @@ public class Database
 			st.executeUpdate("INSERT INTO users (username, password) "
 					+ "VALUES ('" + username + "', aes_encrypt('" + password + "', 'key'));");
 		} catch (SQLException e) {
-			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -130,7 +129,6 @@ public class Database
 			Statement st = conn.createStatement();
 			st.executeUpdate(query);
 		} catch (SQLException e) {
-			e.printStackTrace();
 			return false;
 		}
 		
