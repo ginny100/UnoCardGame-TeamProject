@@ -1,7 +1,6 @@
 package uno;
 
 import java.util.ArrayList;
-
 import ocsf.client.AbstractClient;
 
 public class GameClient extends AbstractClient
@@ -15,11 +14,13 @@ public class GameClient extends AbstractClient
 	private String user;
 	private ArrayList<String> userCards;
 
-	public void setUserName(String user) {
+	public void setUserName(String user) 
+	{
 		this.user = user;
 	}
 
-	public String getUserName() {
+	public String getUserName() 
+	{
 		return user;
 	}
 
@@ -40,7 +41,8 @@ public class GameClient extends AbstractClient
 	{
 		this.gameControl = gameControl;
 	}
-	public void setEndControl(EndControl endControl) {
+	public void setEndControl(EndControl endControl)
+	{
 		this.endControl = endControl;
 	}
 
@@ -63,66 +65,66 @@ public class GameClient extends AbstractClient
 			String messages[] = message.split(",");
 
 			// The server sends the client the card to be played
-			if(messages[0].equals("PutOnTop")) {
+			if(messages[0].equals("PutOnTop")) 
+			{
 				gameControl.cardPlaced(messages[1], Integer.parseInt(messages[2]));
 			}
-			
 			// The server sends the initial card to begin the game
-			else if(messages[0].equals("CardOnTop")) {
+			else if(messages[0].equals("CardOnTop")) 
+			{
 				gameControl.cardPlaced(messages[1], Integer.parseInt(messages[2]));
 			}
-			
 			// The server sends this String to indicate the user is/isn't available to Uno attacks
-			else if (messages[0].equals("Safe")) {
+			else if (messages[0].equals("Safe")) 
+			{
 				gameControl.updateSafety(Boolean.parseBoolean(messages[1]));
 			}
-			
 			// Server sends each client the winner of the game
-			else if (messages[0].equals("Winner")) {
+			else if (messages[0].equals("Winner")) 
+			{
 				gameControl.sendToEndScreen(messages[1], messages[2]);
 			}
-			
 			// The server sends individual users this to indicate it is their turn
-			else if(message.equals("YourTurn")) {
+			else if(message.equals("YourTurn")) 
+			{
 				gameControl.usersTurn();
 			}
-			
 			// If we successfully logged in, tell the login controller.
 			else if (message.equals("LoginSuccessful"))
 			{
 				loginControl.loginSuccess();
 			}
-
 			// If we successfully created an account, tell the create account controller.
 			else if (message.equals("CreateAccountSuccessful"))
 			{
 				createAccountControl.createAccountSuccess();
 			}
-			
 			// Join the appropriate waiting room
-			else if(message.equals("2waiting")) {
+			else if(message.equals("2waiting"))
+			{
 				menuControl.JoinPlayers();
 				gameControl.setNumPlayers(2);
 			}
-
-			else if(message.equals("3waiting")) {
+			else if(message.equals("3waiting")) 
+			{
 				menuControl.JoinPlayers();
 				gameControl.setNumPlayers(3);
 			}
-
-			else if(message.equals("4waiting")) {
+			else if(message.equals("4waiting"))
+			{
 				menuControl.JoinPlayers();
 				gameControl.setNumPlayers(4);
 			}
-
 			// Begin the game
-			else if(message.equals("GameTrue")) {
+			else if(message.equals("GameTrue")) 
+			{
 				gameControl.StartGame();
 			}
 		}
 
 		// The server sends an ArrayList containing the user's hand in String format
-		else if (arg0 instanceof ArrayList<?>) {
+		else if (arg0 instanceof ArrayList<?>) 
+		{
 			//The deck will be in the server for players to access
 			//The array for the cards played will be in the server
 			//One array for the cards in hand
@@ -133,17 +135,16 @@ public class GameClient extends AbstractClient
 			gameControl.updateCardCount();   
 
 		}
-
 		// Server sends an array containing each player's card count
-		else if (arg0 instanceof Integer[]) {
+		else if (arg0 instanceof Integer[]) 
+		{
 			gameControl.updateUnoLabels((Integer[])arg0);
 		}
-
 		// Server sends each client the number they are in the game
-		else if (arg0 instanceof Integer) {
+		else if (arg0 instanceof Integer) 
+		{
 			gameControl.setUserPlayerNum(Integer.parseInt(arg0.toString()));
 		}
-
 		// If we received an Error, figure out where to display it.
 		else if (arg0 instanceof Error)
 		{
@@ -155,18 +156,16 @@ public class GameClient extends AbstractClient
 			{
 				loginControl.displayError(error.getMessage());
 			}
-
 			// Display account creation errors using the create account controller.
 			else if (error.getType().equals("CreateAccount"))
 			{
 				createAccountControl.displayError(error.getMessage());
 			}
-			
 			// Display error from failure to update score
-			else if (error.getType().equals("UpdateScore")) {
+			else if (error.getType().equals("UpdateScore")) 
+			{
 				endControl.displayError(error.getMessage());
 			}
 		}
 	}  
-
 }
