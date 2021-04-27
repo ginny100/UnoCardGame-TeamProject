@@ -4,11 +4,11 @@ import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-public class CreateAccountControl implements ActionListener{
+public class CreateAccountControl implements ActionListener
+{
 	// Private data fields for the container and chat client.
 	private JPanel container;
 	private GameClient client;
