@@ -137,10 +137,11 @@ public class GameControl implements ActionListener{
 			if (i == userPlayerNum) {
 				unoLabels[i].setText("You | " + userCardCounts[i].toString());
 			} else {
-				unoLabels[i].setText("Player " + i + " | " + userCardCounts[i].toString());
+				unoLabels[i].setText("Player " + ((Integer)(i+1)).toString() + " | " + userCardCounts[i].toString());
 			}
 		}
-		if (userCardCounts[userPlayerNum] == 2 && !safetyLabel.isVisible()) {
+		// Warn the user if they are in danger
+		if (userCardCounts[userPlayerNum] <= 2) {
 			safetyLabel.setVisible(true);
 			updateSafety(false);
 		}
@@ -156,7 +157,7 @@ public class GameControl implements ActionListener{
 				safetyLabel.setText("You're in danger!");
 				safetyLabel.setBackground(Color.RED);
 			} else {
-				safetyLabel.setText("You aren't safe.");
+				safetyLabel.setText("You haven't said UNO");
 				safetyLabel.setBackground(Color.YELLOW);
 			}
 		}
@@ -217,6 +218,8 @@ public class GameControl implements ActionListener{
 			for(int i = 0; i < 4; i++) {
 				chooseColorButtons[i].setVisible(true);
 			}
+			// Prevent user from being able to send an extra card before picking the color
+			userPlayButton.setEnabled(false);
 			playCard(command);
 		}
 
@@ -233,6 +236,9 @@ public class GameControl implements ActionListener{
 			for(int i = 0; i < 4; i++) {
 				chooseColorButtons[i].setVisible(false);
 			}
+			// Re-enable play button after picking the color
+			userPlayButton.setEnabled(true);
+			
 			isUsersTurn = false;
 			instructionLabel.setText("Waiting for your turn");
 		}

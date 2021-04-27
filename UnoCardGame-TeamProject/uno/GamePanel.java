@@ -257,13 +257,14 @@ public class GamePanel extends JPanel{
 			unoLabels[i].setBounds(590, (100+(200*i)),80,20);
 			add(unoLabels[i]);
 			unoLabels[i].setText("7");
-			unoLabels[i].setHorizontalAlignment(SwingConstants.RIGHT);
+			unoLabels[i].setHorizontalAlignment(JLabel.RIGHT);
 			unoLabels[i].setVisible(false);
 		}
 			
 		safetyLabel = new JLabel();
-		safetyLabel.setBounds(300, 655, 120, 30);
+		safetyLabel.setBounds(300, 655, 125, 30);
 		safetyLabel.setText("You haven't said UNO");
+		safetyLabel.setHorizontalAlignment(JLabel.CENTER);
 		safetyLabel.setOpaque(true);
 		safetyLabel.setBackground(Color.YELLOW);
 		add(safetyLabel);
@@ -277,7 +278,7 @@ public class GamePanel extends JPanel{
 		
 		chooseColorButtons = new JButton[4];
 		
-		Color[] colors = {Color.blue, Color.red, Color.yellow, Color.green};
+		Color[] colors = {Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN};
 		
 		for(int i = 0; i < 4; i++) {
 			chooseColorButtons[i] = new JButton();
