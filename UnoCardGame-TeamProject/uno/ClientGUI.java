@@ -11,6 +11,7 @@ public class ClientGUI extends JFrame
 	// Constructor that creates the client GUI.
 	public ClientGUI()
 	{
+		getContentPane().setBackground(new Color(176, 224, 230));
 		GameClient client = new GameClient();
 		client.setHost("localhost");
 		client.setPort(8300);
@@ -28,6 +29,7 @@ public class ClientGUI extends JFrame
 		// Create the card layout container.
 		CardLayout cardLayout = new CardLayout();
 		JPanel container = new JPanel(cardLayout);
+		container.setBackground(new Color(176, 224, 230));
 
 		//Create the Controllers next
 		//Next, create the Controllers
@@ -46,7 +48,9 @@ public class ClientGUI extends JFrame
 
 		// Create the four views. (need the controller to register with the Panels
 		JPanel view1 = new InitialPanel(ic);
+		view1.setBackground(new Color(176, 224, 230));
 		JPanel view2 = new LoginPanel(lc);
+		view2.setBackground(new Color(176, 224, 230));
 		JPanel view3 = new CreateAccountPanel(ac);
 		JPanel view4 = new MenuPanel(mc);
 		JPanel view5 = new GamePanel(gc);
@@ -66,7 +70,7 @@ public class ClientGUI extends JFrame
 		cardLayout.show(container, "1");
 
 		// Add the card layout container to the JFrame.
-		this.add(container, BorderLayout.CENTER);
+		getContentPane().add(container, BorderLayout.CENTER);
 		
 		// Show the JFrame.
 		this.setSize(750, 750);
