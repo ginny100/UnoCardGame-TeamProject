@@ -2,7 +2,9 @@ package uno;
 
 import java.io.Serializable;
 
-public class GameData implements Serializable{
+public class GameData implements Serializable
+{
+	//Private Data Field
 	private String button;
 	private String user;
 	private String cardColor;
@@ -12,27 +14,33 @@ public class GameData implements Serializable{
 	private int numPlayers;
 	private int target;	// For directed UNO "attacks"
 
-	public String getButtonName() {
+	public String getButtonName() 
+	{
 		return button;
 	}
 
-	public String getUserName() {
+	public String getUserName() 
+	{
 		return user;
 	}
 
-	public String getCardValue() {
+	public String getCardValue() 
+	{
 		return cardValue;
 	}
 
-	public String getCardColor() {
+	public String getCardColor() 
+	{
 		return cardColor;
 	}
 
-	public int getPlayerNum() {
+	public int getPlayerNum()
+	{
 		return playerNum;
 	}
 
-	public int getNumPlayers() {
+	public int getNumPlayers() 
+	{
 		return numPlayers;
 	}
 	
@@ -40,43 +48,53 @@ public class GameData implements Serializable{
 		return numCards;
 	}
 	
-	public int getTarget() {
+	public int getTarget() 
+	{
 		return target;
 	}
 
-	public void setButtonName(String button) {
+	public void setButtonName(String button) 
+	{
 		this.button = button;
 	}
 
-	public void setUserName(String user) {
+	public void setUserName(String user) 
+	{
 		this.user = user;
 	}
 
-	public void setCardValue(String cardValue) {
+	public void setCardValue(String cardValue) 
+	{
 		this.cardValue = cardValue;
 	}
 
-	public void setCardColor(String cardColor) {
+	public void setCardColor(String cardColor)
+	{
 		this.cardColor = cardColor;
 	}
 
-	public void setPlayerNum(int playerNum) {
+	public void setPlayerNum(int playerNum) 
+	{
 		this.playerNum = playerNum;
 	}
 
-	public void setNumPlayers(int numPlayers) {
+	public void setNumPlayers(int numPlayers) 
+	{
 		this.numPlayers = numPlayers;
 	}
 	
-	public void setNumCards(int numCards) {
+	public void setNumCards(int numCards) 
+	{
 		this.numCards = numCards;
 	}
 	
-	public void setTarget(int target) {
+	public void setTarget(int target)
+	{
 		this.target = target;
 	}
 
-	public GameData(String button, String user, int numCards, int playerNum, int numPlayers) {
+	public GameData(String button, String user, int numCards, int playerNum, int numPlayers)
+	{
 		setButtonName(button);
 		setPlayerNum(playerNum);
 		setUserName(user);
@@ -84,7 +102,8 @@ public class GameData implements Serializable{
 		setNumCards(numCards);
 	}
 
-	public GameData(String cardColor, String cardValue, String user, int numCards, int playerNum, int numPlayers) {
+	public GameData(String cardColor, String cardValue, String user, int numCards, int playerNum, int numPlayers) 
+	{
 		setUserName(user);
 		setCardValue(cardValue);
 		setCardColor(cardColor);
