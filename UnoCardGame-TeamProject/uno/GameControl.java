@@ -6,13 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class GameControl implements ActionListener{
+public class GameControl implements ActionListener
+{
 	private JPanel container;
 
 	//The client that is using this
@@ -63,7 +63,6 @@ public class GameControl implements ActionListener{
 	public boolean isUsersTurn;
 	private GameRules gameRules;
 
-
 	// Constructor for the game controller.
 	public GameControl(JPanel container,GameClient client)
 	{
@@ -82,31 +81,35 @@ public class GameControl implements ActionListener{
 		gameRules = new GameRules(this);
 	}
 
-
-	public void setUserPlayerNum(int userPlayerNum) {
+	public void setUserPlayerNum(int userPlayerNum) 
+	{
 		this.userPlayerNum = userPlayerNum;
 	}
 
-	public void setNumPlayers(int numPlayers) {
+	public void setNumPlayers(int numPlayers)
+	{
 		this.numPlayers = numPlayers;
 	}
 
-	public void setUserCards(ArrayList<String> userCards) {
+	public void setUserCards(ArrayList<String> userCards) 
+	{
 		this.userCards = userCards;
 	}
 
-	public void setUserCardCount(JLabel userCardCount){
+	public void setUserCardCount(JLabel userCardCount)
+	{
 		this.userCardCount = userCardCount;
 	}
 
-	public void setChooseColorButtons(JButton chooseColorButtons[]) {
+	public void setChooseColorButtons(JButton chooseColorButtons[]) 
+	{
 		this.chooseColorButtons = chooseColorButtons;
 	}
 
 	public void setDecks(JButton blueCardButtons[], JButton redCardButtons[], JButton yellowCardButtons[], 
 			JButton greenCardButtons[], JButton wildCardButtons[], JButton[] otherPlayerDeck, 
-			JButton deckButton, JButton userPlayButton) {
-
+			JButton deckButton, JButton userPlayButton) 
+	{
 		this.blueCardButtons = blueCardButtons;
 		this.redCardButtons = redCardButtons;
 		this.yellowCardButtons = yellowCardButtons;
@@ -117,46 +120,62 @@ public class GameControl implements ActionListener{
 		this.userPlayButton =  userPlayButton;
 	}
 
-	public void setInstructionLabel(JLabel il) {
+	public void setInstructionLabel(JLabel il) 
+	{
 		this.instructionLabel = il;
 	}
 
-	public void setUnoLabels(JLabel[] unoLabels, JLabel safetyLabel) {
+	public void setUnoLabels(JLabel[] unoLabels, JLabel safetyLabel) 
+	{
 		this.unoLabels= unoLabels;
 		this.safetyLabel = safetyLabel;
 	}
 
 	// Method to update the user card count (when the player receives a card from the server)
-	public void updateCardCount() {
+	public void updateCardCount() 
+	{
 		userCardCount.setText(Integer.toString(userCards.size()));
 	}
 
 	// Server sends a list of all user cards, update the labels for the client
-	public void updateUnoLabels(Integer[] userCardCounts) {
-		for (int i = 0; i < userCardCounts.length; i++) {
-			if (i == userPlayerNum) {
+	public void updateUnoLabels(Integer[] userCardCounts) 
+	{
+		for (int i = 0; i < userCardCounts.length; i++) 
+		{
+			if (i == userPlayerNum)
+			{
 				unoLabels[i].setText("You | " + userCardCounts[i].toString());
-			} else {
+			}
+			else
+			{
 				unoLabels[i].setText("Player " + ((Integer)(i+1)).toString() + " | " + userCardCounts[i].toString());
 			}
 		}
 		// Warn the user if they are in danger
-		if (userCardCounts[userPlayerNum] <= 2) {
+		if (userCardCounts[userPlayerNum] <= 2) 
+		{
 			safetyLabel.setVisible(true);
 			updateSafety(false);
 		}
 	}
 
 	// Indicates whether or not the user is available to Uno calls
-	public void updateSafety(boolean safe) {
-		if (safe) {
+	public void updateSafety(boolean safe) 
+	{
+		if (safe)
+		{
 			safetyLabel.setText("You're safe!");
 			safetyLabel.setBackground(Color.GREEN);
-		} else {
-			if (userCards.size() == 1) {
+		}
+		else 
+		{
+			if (userCards.size() == 1) 
+			{
 				safetyLabel.setText("You're in danger!");
 				safetyLabel.setBackground(Color.RED);
-			} else {
+			} 
+			else
+			{
 				safetyLabel.setText("You haven't said UNO");
 				safetyLabel.setBackground(Color.YELLOW);
 			}
@@ -164,7 +183,8 @@ public class GameControl implements ActionListener{
 	}
 
 	// Setter for cards played (visible to all players when a card is played)
-	public void setPlayedLabels(JLabel[] blueLabels, JLabel[] redLabels, JLabel[] yellowLabels, JLabel[] greenLabels, JLabel[] wildLabels) {
+	public void setPlayedLabels(JLabel[] blueLabels, JLabel[] redLabels, JLabel[] yellowLabels, JLabel[] greenLabels, JLabel[] wildLabels) 
+	{
 		this.blueCardLabels = blueLabels;
 		this.redCardLabels = redLabels;
 		this.yellowCardLabels = yellowLabels;
@@ -182,181 +202,219 @@ public class GameControl implements ActionListener{
 		String command = ae.getActionCommand();
 
 		// If the user is cycling through their hand
-		if(command == "PD") {
+		if(command == "PD") 
+		{
 			cycleThroughHand();
 		}
-
 		// If the user is drawing from the deck
-		else if(command == "D") {
-			if (gameRules.canDraw()) {
+		else if(command == "D") 
+		{
+			if (gameRules.canDraw()) 
+			{
 				GameData data = new GameData("DrawCard", client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
-				try {
+				try
+				{
 					client.sendToServer(data);
-				} catch (IOException e) {
+				} 
+				catch (IOException e)
+				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
-
 		// If the user is declaring Uno 
-		else if(command == "uno") {
+		else if(command == "uno") 
+		{
 			GameData data = new GameData("uno", client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 			JComponent source = (JComponent) ae.getSource();
 			data.setTarget((Integer)source.getClientProperty("target"));
-			try {
+			try
+			{
 				client.sendToServer(data);
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
 		// If the user is playing a wild or wild draw four
-		else if(isUsersTurn && (command == "W,0" || command == "W,1")){
-			for(int i = 0; i < 4; i++) {
+		else if(isUsersTurn && (command == "W,0" || command == "W,1"))
+		{
+			for(int i = 0; i < 4; i++) 
+			{
 				chooseColorButtons[i].setVisible(true);
 			}
 			playCard(command);
 		}
-
 		// If the user is changing the color in play
-		else if(command == "Blue" || command == "Red" || command == "Yellow" || command == "Green") {
+		else if(command == "Blue" || command == "Red" || command == "Yellow" || command == "Green") 
+		{
 			GameData data = new GameData(command, client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 
-			try {
+			try 
+			{
 				client.sendToServer(data);
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			for(int i = 0; i < 4; i++) {
+			
+			for(int i = 0; i < 4; i++) 
+			{
 				chooseColorButtons[i].setVisible(false);
 			}
 			isUsersTurn = false;
 			instructionLabel.setText("Waiting for your turn");
 		}
-
 		// If user is trying to place a normal card
-		else {
-			if (isUsersTurn && gameRules.cardCanPlay(command)) {
+		else 
+		{
+			if (isUsersTurn && gameRules.cardCanPlay(command)) 
+			{
 				playCard(command);
 			}
 		}
 	}
 
 	//Change to newCardOnTop
-	public void cardPlaced(String topCardColor, int topCardValue) {
+	public void cardPlaced(String topCardColor, int topCardValue) 
+	{
 
 		blueCardLabels[this.topCardValue].setVisible(false);
 		redCardLabels[this.topCardValue].setVisible(false);
 		yellowCardLabels[this.topCardValue].setVisible(false);
 		greenCardLabels[this.topCardValue].setVisible(false);
-		if(this.topCardColor.equals("W")) {
+		if(this.topCardColor.equals("W")) 
+		{
 			wildCardLabels[this.topCardValue].setVisible(false);
 		}
-
 
 		this.topCardColor = topCardColor;
 		this.topCardValue = topCardValue;
 
-
-		if(topCardColor.equals("B")) {
+		if(topCardColor.equals("B")) 
+		{
 			blueCardLabels[topCardValue].setVisible(true);
 		}
-		else if (topCardColor.equals("R")) {
+		else if (topCardColor.equals("R")) 
+		{
 			redCardLabels[topCardValue].setVisible(true);
 		}
-		else if (topCardColor.equals("Y")) {
+		else if (topCardColor.equals("Y"))
+		{
 			yellowCardLabels[topCardValue].setVisible(true);
 		}
-		else if (topCardColor.equals("G")) {
+		else if (topCardColor.equals("G")) 
+		{
 			greenCardLabels[topCardValue].setVisible(true);
 		}
-		else if (topCardColor.equals("W")) {
+		else if (topCardColor.equals("W")) 
+		{
 			wildCardLabels[topCardValue].setVisible(true);
 		}
 	}
 
 	// Each time the user's hand is pressed, cycle through each card on its right
-	public void cycleThroughHand() {
-		if (userCards.size() != 0) {
-			if(userCards.size() <= userCardDisplayed) {
+	public void cycleThroughHand() 
+	{
+		if (userCards.size() != 0) 
+		{
+			if(userCards.size() <= userCardDisplayed) 
+			{
 				userCardDisplayed = 0;
 			}
 			blueCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
 			redCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
 			yellowCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
 			greenCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
-			if(userCardDisplayedValue[0].equals("W")) {
+			if(userCardDisplayedValue[0].equals("W")) 
+			{
 				wildCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(false);
 			}
 
 			userCardDisplayedValue = userCards.get(userCardDisplayed).split(",");
 
-			if(userCardDisplayedValue[0].equals("B")) {
+			if(userCardDisplayedValue[0].equals("B")) 
+			{
 				blueCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
 			}
-			else if (userCardDisplayedValue[0].equals("R")) {
+			else if (userCardDisplayedValue[0].equals("R")) 
+			{
 				redCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
 			}
-			else if (userCardDisplayedValue[0].equals("Y")) {
+			else if (userCardDisplayedValue[0].equals("Y")) 
+			{
 				yellowCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
 			}
-			else if (userCardDisplayedValue[0].equals("G")) {
+			else if (userCardDisplayedValue[0].equals("G")) 
+			{
 				greenCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
 			}
-			else if (userCardDisplayedValue[0].equals("W")) {
+			else if (userCardDisplayedValue[0].equals("W"))
+			{
 				wildCardButtons[Integer.parseInt(userCardDisplayedValue[1])].setVisible(true);
 			}
 			userCardDisplayed++;
 		}
 	}
 
-	public void StartGame() {
-		if(userPlayerNum != 0) {
+	public void StartGame() 
+	{
+		if(userPlayerNum != 0)
+		{
 			instructionLabel.setText("Waiting for your turn");
 		}
 		userCardDisplayed = 0;
 		turnDecksOn();
 	}
 
-	public void turnDecksOn() {
+	public void turnDecksOn()
+	{
 		deckButton.setVisible(true);
 		userPlayButton.setVisible(true);
 		userCardCount.setVisible(true);
 
-		for(int i = 0; i < numPlayers; i++) {
+		for(int i = 0; i < numPlayers; i++) 
+		{
 			otherPlayerDeck[i].setVisible(true);
 			unoLabels[i].setVisible(true);
 		}
 	}
 
-	private void playCard(String card) {
+	private void playCard(String card)
+	{
 		String tokens[] = card.split(",");
 		GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
-		try {
+		try
+		{
 			userCards.remove(card);
 			updateCardCount();
 			cycleThroughHand();
 			client.sendToServer(data);
 			isUsersTurn = false;
 			instructionLabel.setText("Waiting for your turn");
-
-		} catch (IOException e) {
+		} 
+		catch (IOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void usersTurn() {
+	public void usersTurn()
+	{
 		isUsersTurn = true;
 		instructionLabel.setText("Your Turn");
 	}
 	
 	// Once the game is over, send the player to the end screen
 	// Be sure to clean up all old values in case the player plays again
-	public void sendToEndScreen(String playerNum, String username) {
+	public void sendToEndScreen(String playerNum, String username)
+	{
 		EndPanel endPanel = (EndPanel) container.getComponent(5);
 
 		// Reinitialize values
@@ -370,9 +428,12 @@ public class GameControl implements ActionListener{
 
 		userCards = new ArrayList<String>();
 		
-		if (playerNum.equals(((Integer)userPlayerNum).toString())) {
+		if (playerNum.equals(((Integer)userPlayerNum).toString()))
+		{
 			endPanel.setStatus("Win!");
-		} else {
+		} 
+		else
+		{
 			endPanel.setStatus("Lose");
 		}
 		endPanel.winnerInfo(playerNum, username);
