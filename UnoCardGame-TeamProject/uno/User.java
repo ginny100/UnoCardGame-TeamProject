@@ -24,7 +24,7 @@ public class User {
 		this.playerNum = playerNum;
 		this.username = username;
 		saidUno = false;
-		handSize = 3;
+		handSize = 7;
 	}
 	
 	public void setUsername(String un) {
