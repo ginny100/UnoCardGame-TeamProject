@@ -3,11 +3,10 @@ package uno;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JPanel;
 
-public class EndControl implements ActionListener{
-
+public class EndControl implements ActionListener
+{
 	private JPanel container;
 	private GameClient client;
 
@@ -17,9 +16,9 @@ public class EndControl implements ActionListener{
 		this.client = client;
 	}
 
-
 	@Override
-	public void actionPerformed(ActionEvent ae) {
+	public void actionPerformed(ActionEvent ae) 
+	{
 		// Get the name of the button clicked.
 		String command = ae.getActionCommand();
 
@@ -31,16 +30,16 @@ public class EndControl implements ActionListener{
 		}
 		
 		// The Play Again button brings the user back to the main menu and allows them to enter a new game
-		else if (command == "Play Again") {
+		else if (command == "Play Again") 
+		{
 			CardLayout cardLayout = (CardLayout)container.getLayout();
 			cardLayout.show(container, "4");
 		}
-
-
 	}
 
 	// If any errors occur, update the errorlabel
-	public void displayError(String error) {
+	public void displayError(String error) 
+	{
 		EndPanel endPanel = (EndPanel)container.getComponent(5);
 		endPanel.setError(error);
 	}
