@@ -1,1 +1,1 @@
-java -cp .;ocsf.jar uno.ClientGUI
+java -cp .;ocsf.jar uno.ClientGUI localhost

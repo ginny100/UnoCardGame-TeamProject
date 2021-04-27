@@ -47,9 +47,9 @@ public class GameClient extends AbstractClient
 	}
 
 	// Constructor for initializing the client with default settings.
-	public GameClient()
+	public GameClient(String host)
 	{
-		super("localhost", 8300);
+		super(host, 8300);
 		userCards = new ArrayList<String>();
 	}
 

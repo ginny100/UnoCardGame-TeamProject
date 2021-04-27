@@ -7,10 +7,10 @@ import java.io.IOException;
 public class ClientGUI extends JFrame
 {
 	// Constructor that creates the client GUI.
-	public ClientGUI()
+	public ClientGUI(String host)
 	{
 		getContentPane().setBackground(new Color(176, 224, 230));
-		GameClient client = new GameClient();
+		GameClient client = new GameClient(host);
 		client.setHost("localhost");
 		client.setPort(8300);
 		try
@@ -79,6 +79,6 @@ public class ClientGUI extends JFrame
 	// Main function that creates the client GUI when the program is started.
 	public static void main(String[] args)
 	{
-		new ClientGUI();
+		new ClientGUI(args[0]);
 	}
 }
