@@ -12,10 +12,13 @@ public class Database
 	{
 		// Read from the properties
 		Properties prop = new Properties();
-		try {
+		try 
+		{
 			FileInputStream fis = new FileInputStream("uno/db.properties");
 			prop.load(fis);
-		} catch (Exception e) {
+		} 
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 
@@ -23,9 +26,12 @@ public class Database
 		String pass = prop.getProperty("password");
 		String url = prop.getProperty("url");
 
-		try {
+		try 
+		{
 			conn = DriverManager.getConnection(url, user, pass);
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -40,26 +46,34 @@ public class Database
 	private ArrayList<String> executeQuery(String query)
 	{
 		ArrayList<String> result = new ArrayList<String>();
-		try {
+		try 
+		{
 			Statement statement = conn.createStatement();
 			ResultSet rs = statement.executeQuery(query);
-			if (!rs.next()) {
+			if (!rs.next())
+			{
 				return null;
-			} else {
+			}
+			else 
+			{
 				ResultSetMetaData rmd = rs.getMetaData();
 				int noCols = rmd.getColumnCount();
 				int i = 1;
-				do {
+				do 
+				{
 					String record = "";
-					for (i=1; i<=noCols; i++) {
+					for (i=1; i<=noCols; i++) 
+					{
 						record += rs.getString(i);
 						record += ",";
 						result.add(record);
 					}
-				} while(rs.next());
+				} 
+				while(rs.next());
 			}
-
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e)
+		{
 			return null;
 		}
 		return result;
@@ -73,9 +87,12 @@ public class Database
 		String query = "SELECT 1 FROM users WHERE username = '" + username + "' && aes_decrypt(password, 'key') = '" + password + "';";
 
 		// All we need to know is if the account is valid
-		if (executeQuery(query) == null) {
+		if (executeQuery(query) == null)
+		{
 			return false;
-		} else {
+		}
+		else 
+		{
 			return true;
 		}
 	}
@@ -84,55 +101,69 @@ public class Database
 	public boolean createNewAccount(String username, String password)
 	{
 		// Ensure the username doesn't already exist
-		if (!usernameIsUnique(username)) {
+		if (!usernameIsUnique(username)) 
+		{
 			return false;
 		}
 
 		// Save the username and password by running executeUpdate
 		// Ensure the password being inserted is encrypted with aes_encrypt and 'key' as key
-		try {
+		try
+		{
 			Statement st = conn.createStatement();
 			st.executeUpdate("INSERT INTO users (username, password) "
 					+ "VALUES ('" + username + "', aes_encrypt('" + password + "', 'key'));");
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e) 
+		{
 			return false;
 		}
 		return true;
 	}
 
 	// Method to view if username has been taken
-	public boolean usernameIsUnique(String username) {
-		if (executeQuery("SELECT 1 FROM users WHERE username = '" + username + "';") != null) {
+	public boolean usernameIsUnique(String username)
+	{
+		if (executeQuery("SELECT 1 FROM users WHERE username = '" + username + "';") != null) 
+		{
 			return false;
-		} else {
+		} 
+		else 
+		{
 			return true;
 		}
 	}
 
 	// Method GameServer calls once a user has won a game
 	// Database keeps tally of wins per user, this method ups the count by one
-	public boolean increaseWinCount(String username) {
+	public boolean increaseWinCount(String username) 
+	{
 		ArrayList<String> currentWinResults = executeQuery("SELECT wins FROM wins WHERE (username='"+username+"');");
 		String query = "";
 		
 		// See if user has won before
-		if (currentWinResults != null) {
+		if (currentWinResults != null) 
+		{
 			// Parse the int (be sure to strip the trailing comma
 			int currentWins = Integer.parseInt(currentWinResults.get(0).replaceAll(",$", ""));
 			query = "UPDATE wins SET wins=" + ((Integer)(currentWins+1)).toString() + " WHERE username='"+username+"';";
-		} else {
+		} 
+		else 
+		{
 			query = "INSERT INTO wins (username, wins) VALUES ('"+username+"', 1);";
 		}
 		
 		// This will fail if user is not in users table, but that's what we want
-		try {
+		try
+		{
 			Statement st = conn.createStatement();
 			st.executeUpdate(query);
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e)
+		{
 			return false;
 		}
 		
 		return true;
 	}
 }
-
