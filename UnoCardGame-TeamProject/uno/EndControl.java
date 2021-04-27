@@ -41,6 +41,7 @@ public class EndControl implements ActionListener{
 
 	// If any errors occur, update the errorlabel
 	public void displayError(String error) {
-
+		EndPanel endPanel = (EndPanel)container.getComponent(5);
+		endPanel.setError(error);
 	}
 }

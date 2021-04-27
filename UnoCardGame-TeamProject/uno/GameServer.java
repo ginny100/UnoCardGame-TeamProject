@@ -169,7 +169,7 @@ public class GameServer extends AbstractServer
 		String username = data.getUsername();
 		String password = data.getPassword();
 		Object returnMsg = "";
-		
+
 		// Ensure username doesn't already exist
 		if (database.usernameIsUnique(username)) {
 			if (database.createNewAccount(username, password)) {
@@ -350,6 +350,7 @@ public class GameServer extends AbstractServer
 					// If self-accusatory and have ONE card
 					else if (data.getPlayerNum() == data.getTarget() && data.getNumCards() == 1) {
 						users.get(data.getTarget()).sayUno();
+						sendToAllClients(getUserCardCount());	// Update the user's card count
 					}
 
 					// TODO punish attacker here?
@@ -433,13 +434,11 @@ public class GameServer extends AbstractServer
 			}
 		}
 		checkForWinner();
-		System.out.println("Completed GameData run. Turn is : " + usersTurn + " and top card is " + topCard);
 	}
 
 	// Helper method to place a card onto the pile for all users
 	// Plays card provided in GameData
 	private void playCard(GameData data) {
-		System.out.println("Placing " + data.getCardColor() + data.getCardValue());
 		cardsPlaced.add(data.getCardColor()+","+data.getCardValue());
 		topCard = data.getCardColor()+","+data.getCardValue();
 		sendToAllClients("PutOnTop,"+topCard);
@@ -538,7 +537,7 @@ public class GameServer extends AbstractServer
 			userNum = itr.next();
 			if(users.get(userNum).getNumCards() == 0) {
 				sendToAllClients("Winner," + userNum.toString() + "," + users.get(userNum).getUsername());
-				
+
 				// Attempt to track user wins, report error if fail
 				if (!database.increaseWinCount(users.get(userNum).getUsername())) {
 					try {
@@ -547,7 +546,7 @@ public class GameServer extends AbstractServer
 						e.printStackTrace();
 					}
 				}
-				
+
 				reset();
 			};
 		}

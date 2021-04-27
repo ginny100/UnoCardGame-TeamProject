@@ -191,7 +191,6 @@ public class GameControl implements ActionListener{
 			if (gameRules.canDraw()) {
 				GameData data = new GameData("DrawCard", client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 				try {
-					System.out.println("Drawing: " + data.getCardValue() + " to " + client.getHost());
 					client.sendToServer(data);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -218,8 +217,6 @@ public class GameControl implements ActionListener{
 			for(int i = 0; i < 4; i++) {
 				chooseColorButtons[i].setVisible(true);
 			}
-			// Prevent user from being able to send an extra card before picking the color
-			userPlayButton.setEnabled(false);
 			playCard(command);
 		}
 
@@ -236,9 +233,6 @@ public class GameControl implements ActionListener{
 			for(int i = 0; i < 4; i++) {
 				chooseColorButtons[i].setVisible(false);
 			}
-			// Re-enable play button after picking the color
-			userPlayButton.setEnabled(true);
-			
 			isUsersTurn = false;
 			instructionLabel.setText("Waiting for your turn");
 		}
@@ -342,7 +336,6 @@ public class GameControl implements ActionListener{
 		String tokens[] = card.split(",");
 		GameData data = new GameData(tokens[0], tokens[1], client.getUserName(), userCards.size(), userPlayerNum, numPlayers);
 		try {
-			System.out.println("Trying to place: " + data.getCardColor() + data.getCardValue());
 			userCards.remove(card);
 			updateCardCount();
 			cycleThroughHand();
@@ -375,7 +368,7 @@ public class GameControl implements ActionListener{
 		userCardDisplayedValue[0] = "B";
 		userCardDisplayedValue[1] = "0";
 
-		gameRules = new GameRules(this);
+		userCards = new ArrayList<String>();
 		
 		if (playerNum.equals(((Integer)userPlayerNum).toString())) {
 			endPanel.setStatus("Win!");

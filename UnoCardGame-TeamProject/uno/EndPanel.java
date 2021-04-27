@@ -47,6 +47,10 @@ public class EndPanel extends JPanel {
 	    this.add(grid);
 	}
 
+	// Allows access to the errorLabel
+	public void setError(String error) {
+		errorLabel.setText(error);
+	}
 	
 	// GameController can call these two methods to provide the right information before displaying it
 	public void setStatus(String status) {
