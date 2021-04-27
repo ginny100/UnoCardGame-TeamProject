@@ -6,8 +6,6 @@ import java.io.IOException;
 
 public class ClientGUI extends JFrame
 {
-	
-
 	// Constructor that creates the client GUI.
 	public ClientGUI()
 	{
@@ -15,9 +13,12 @@ public class ClientGUI extends JFrame
 		GameClient client = new GameClient();
 		client.setHost("localhost");
 		client.setPort(8300);
-		try {
+		try
+		{
 			client.openConnection();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -56,7 +57,6 @@ public class ClientGUI extends JFrame
 		JPanel view5 = new GamePanel(gc);
 		JPanel view6 = new EndPanel(ec);
 
-
 		// Add the views to the card layout container.
 		container.add(view1, "1");
 		container.add(view2, "2");
@@ -64,7 +64,6 @@ public class ClientGUI extends JFrame
 		container.add(view4, "4");
 		container.add(view5, "5");
 		container.add(view6, "6");
-
 
 		// Show the initial view in the card layout.
 		cardLayout.show(container, "1");
